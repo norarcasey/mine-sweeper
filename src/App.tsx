@@ -1,24 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Difficulty, useBoard } from "./hooks/useBoard";
 
-function App() {
+function App(): React.ReactElement {
+  const { board } = useBoard(Difficulty.Expert);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+      {board.map((row, index) => (
+        <div
+          key={`row-${index}`}
+          style={{
+            display: "flex",
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          {row.map((cell, index) => (
+            <div
+              key={`cell-${index}`}
+              style={{
+                height: "30px",
+                width: "30px",
+                backgroundColor: "#bdbdbd",
+                border: "ridge 4px darkgray",
+                borderTop: "ridge 4px #fff",
+                borderLeft: "ridge 4px #fff",
+                cursor: "pointer",
+              }}
+            >
+              <div>{cell}</div>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
