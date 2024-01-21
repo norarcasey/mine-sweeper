@@ -1,9 +1,9 @@
 import React from "react";
 
+import { Cell } from "./components/Cell";
 import { Difficulty, useBoard } from "./hooks/useBoard";
 
 import "./App.css";
-import { Cell } from "./components/Cell";
 
 function App(): React.ReactElement {
   const { board } = useBoard(Difficulty.Intermediate);
