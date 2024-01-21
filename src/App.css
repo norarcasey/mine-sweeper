@@ -11,6 +11,7 @@
 .cell {
   height: 30px;
   width: 30px;
+  min-width: 30px;
   background-color: #bdbdbd;
   border: ridge 4px darkgray;
   border-top: ridge 4px #fff;

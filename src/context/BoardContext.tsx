@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 
 export enum Difficulty {
   // Beginner board is 9x9 with 10 mines
@@ -24,15 +24,22 @@ function getBoardSize(difficulty: Difficulty): number[] {
   }
 }
 
-export function useBoard(difficulty = Difficulty.Beginner): UseBoard {
+const BoardContext = createContext<UseBoard>({
+  board: [],
+});
+
+export function BoardProvider({
+  children,
+  difficulty,
+}: {
+  children: React.ReactElement;
+  difficulty: Difficulty;
+}) {
   const BOARD_SIZE = getBoardSize(difficulty);
 
   const board: number[][] = Array.from({ length: BOARD_SIZE[0] }, () =>
     Array(BOARD_SIZE[1]).fill(0)
   );
-
-  // get X random mine locations
-  // add them to the board
 
   const mineIds: number[] = [];
 
@@ -44,8 +51,6 @@ export function useBoard(difficulty = Difficulty.Beginner): UseBoard {
     }
   }
 
-  // add the mines to the board
-
   for (const id of mineIds) {
     const col = id % BOARD_SIZE[1];
     const row = Math.floor(id / BOARD_SIZE[1]);
@@ -53,7 +58,19 @@ export function useBoard(difficulty = Difficulty.Beginner): UseBoard {
     board[row][col] = 1;
   }
 
-  return {
-    board,
-  };
+  return (
+    <BoardContext.Provider value={{ board }}>{children}</BoardContext.Provider>
+  );
+}
+
+export function useBoardContext() {
+  const boardContext = useContext(BoardContext);
+
+  if (!boardContext) {
+    throw new Error(
+      "Board Context not available, please check that the provider has been added to the tree."
+    );
+  }
+
+  return boardContext;
 }

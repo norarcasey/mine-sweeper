@@ -1,23 +1,18 @@
 import React from "react";
 
-import { Cell } from "./components/Cell";
-import { Difficulty, useBoard } from "./hooks/useBoard";
+import { BoardProvider, Difficulty } from "./context/BoardContext";
+import { GameBoard } from "./components/GameBoard";
 
 import "./App.css";
 
 function App(): React.ReactElement {
-  const { board } = useBoard(Difficulty.Intermediate);
+  // TODO: allow user to set difficulty
+  // TODO: Add a scoreboard, timer, and reset
 
   return (
-    <div className="board">
-      {board.map((row, index) => (
-        <div key={`row-${index}`} className="row">
-          {row.map((cell, index) => (
-            <Cell key={`cell-${index}`} cell={cell} />
-          ))}
-        </div>
-      ))}
-    </div>
+    <BoardProvider difficulty={Difficulty.Expert}>
+      <GameBoard />
+    </BoardProvider>
   );
 }
 

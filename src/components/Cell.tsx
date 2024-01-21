@@ -1,23 +1,55 @@
 import React, { MouseEvent } from "react";
+import { useBoardContext } from "../context/BoardContext";
 
-export function Cell({ cell }: { cell: number }): React.ReactElement {
+interface CellProps {
+  row: number;
+  column: number;
+  cell: number;
+}
+
+export function Cell({ cell, row, column }: CellProps): React.ReactElement {
+  const { board } = useBoardContext();
+
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
 
-    e.currentTarget.classList.toggle("fa-flag-checkered");
-    e.currentTarget.classList.toggle("fa-solid");
+    ["fa-flag-checkered", "fa-solid"].forEach((c) =>
+      e.currentTarget.classList.toggle(c)
+    );
   }
 
   function handleOnClick(e: MouseEvent<HTMLButtonElement>, cell: number): void {
     if (cell === 0) {
       e.currentTarget.classList.toggle("revealed");
-      // check which other spots to show and how many bombs to reveal
+
+      let bombCount = 0;
+
+      bombCount += board[row][column - 1] ?? 0;
+      bombCount += board[row][column + 1] ?? 0;
+
+      if (board[row - 1]) {
+        bombCount += board[row - 1][column - 1] ?? 0;
+        bombCount += board[row - 1][column];
+        bombCount += board[row - 1][column + 1] ?? 0;
+      }
+
+      if (board[row + 1]) {
+        bombCount += board[row + 1][column - 1] ?? 0;
+        bombCount += board[row + 1][column] ?? 0;
+        bombCount += board[row + 1][column + 1] ?? 0;
+      }
+
+      if (bombCount > 0) {
+        e.currentTarget.textContent = bombCount.toString();
+      } else {
+        // TODO: Expand the reveal
+      }
     }
 
     if (cell === 1) {
-      e.currentTarget.classList.toggle("revealed");
-      e.currentTarget.classList.toggle("fa-solid");
-      e.currentTarget.classList.toggle("fa-bomb");
+      ["revealed", "fa-solid", "fa-bomb"].forEach((c) =>
+        e.currentTarget.classList.toggle(c)
+      );
     }
   }
 
