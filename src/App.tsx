@@ -1,33 +1,19 @@
 import React from "react";
+
 import { Difficulty, useBoard } from "./hooks/useBoard";
 
+import "./App.css";
+import { Cell } from "./components/Cell";
+
 function App(): React.ReactElement {
-  const { board } = useBoard(Difficulty.Expert);
+  const { board } = useBoard(Difficulty.Intermediate);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+    <div className="board">
       {board.map((row, index) => (
-        <div
-          key={`row-${index}`}
-          style={{
-            display: "flex",
-          }}
-        >
+        <div key={`row-${index}`} className="row">
           {row.map((cell, index) => (
-            <div
-              key={`cell-${index}`}
-              style={{
-                height: "30px",
-                width: "30px",
-                backgroundColor: "#bdbdbd",
-                border: "ridge 4px darkgray",
-                borderTop: "ridge 4px #fff",
-                borderLeft: "ridge 4px #fff",
-                cursor: "pointer",
-              }}
-            >
-              <div>{cell}</div>
-            </div>
+            <Cell key={`cell-${index}`} cell={cell} />
           ))}
         </div>
       ))}
