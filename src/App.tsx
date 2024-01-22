@@ -9,7 +9,7 @@ import "./App.css";
 
 function App(): React.ReactElement {
   // TODO: allow user to set difficulty
-  // TODO: Add a scoreboard, timer, and reset
+  // TODO: Add a scoreboard, timer
 
   return (
     <div className="game">

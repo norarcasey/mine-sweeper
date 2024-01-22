@@ -50,7 +50,24 @@ export function BoardProvider({
 
   function updateCellType(row: number, column: number, type: CellType): void {
     const boardClone: CellData[][] = JSON.parse(JSON.stringify(board));
-    boardClone[row][column].type = type;
+    const cell = boardClone[row][column];
+
+    if (cell.type === type) {
+      if (cell.count === -1) {
+        cell.type = CellType.Bomb;
+      }
+
+      if (cell.count === 0) {
+        cell.type = CellType.Empty;
+      }
+
+      if (cell.count > 0) {
+        cell.type = CellType.Hidden;
+      }
+    } else {
+      cell.type = type;
+    }
+
     setBoard(boardClone);
   }
 

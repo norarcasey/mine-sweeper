@@ -7,12 +7,12 @@ import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
 
 export function Scoreboard(): React.ReactElement {
   const { reset } = useBoardContext();
-  const { gameState, resetGameState } = useScoreboardContext();
+  const { gameState, resetGameState, score } = useScoreboardContext();
   const isGameLost = gameState === GameState.Lost;
 
   return (
     <div className="scoreboard">
-      <div className="mine-count">075</div>
+      <div className="mine-count">{score}</div>
       <div className="reset-container">
         <button
           className="reset-button"

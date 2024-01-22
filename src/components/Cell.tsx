@@ -11,7 +11,8 @@ interface CellProps {
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   const { explode, flag, reveal } = useBoardContext();
-  const { setGameLost } = useScoreboardContext();
+  const { setGameLost, incrementScore, decrementScore } =
+    useScoreboardContext();
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
   const isFlagged = cell.type === CellType.Flagged;
@@ -19,8 +20,16 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
 
-    if (!isRevealed) {
+    if (isRevealed) {
+      return;
+    }
+
+    if (cell.type !== CellType.Flagged) {
       flag(row, column);
+      incrementScore();
+    } else {
+      flag(row, column);
+      decrementScore();
     }
   }
 
