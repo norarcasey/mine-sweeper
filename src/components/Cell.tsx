@@ -1,7 +1,7 @@
 import React, { MouseEvent } from "react";
 
 import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
-import { useScoreboardContext } from "../context/ScoreboardContext";
+import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
 
 interface CellProps {
   cell: CellData;
@@ -11,8 +11,9 @@ interface CellProps {
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   const { explode, flag, reveal } = useBoardContext();
-  const { setGameLost, incrementScore, decrementScore } =
+  const { setGameLost, incrementScore, decrementScore, isGameOver } =
     useScoreboardContext();
+
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
   const isFlagged = cell.type === CellType.Flagged;
@@ -20,7 +21,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
 
-    if (isRevealed) {
+    if (isRevealed || isGameOver) {
       return;
     }
 
@@ -37,8 +38,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
     e: MouseEvent<HTMLButtonElement>,
     cell: CellData
   ): void {
-    // Can't click a flagged cell
-    if (isFlagged) {
+    if (isFlagged || isGameOver) {
       return;
     }
 

@@ -14,6 +14,7 @@ interface UseScoreBoardContext {
   incrementScore: () => void;
   decrementScore: () => void;
   score: string;
+  isGameOver: boolean;
 }
 
 const ScoreboardContext = createContext<UseScoreBoardContext | null>(null);
@@ -43,6 +44,9 @@ export function ScoreboardProvider({
     setFlagCount(flagCount - 1);
   }
 
+  const isGameOver =
+    gameState === GameState.Lost || gameState === GameState.Won;
+
   return (
     <ScoreboardContext.Provider
       value={{
@@ -52,6 +56,7 @@ export function ScoreboardProvider({
         incrementScore,
         decrementScore,
         score: flagCount.toString().padStart(3, "0"),
+        isGameOver,
       }}
     >
       {children}
