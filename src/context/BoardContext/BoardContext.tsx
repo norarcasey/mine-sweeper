@@ -6,6 +6,9 @@ import { Difficulty, CellData, CellType } from "./types";
 const BoardContext = createContext<{
   board: CellData[][];
   reveal: (row: number, column: number) => void;
+  reset: () => void;
+  explode: (row: number, column: number) => void;
+  flag: (row: number, column: number) => void;
 } | null>(null);
 
 function revealAdjacent(row: number, column: number, board: CellData[][]) {
@@ -27,7 +30,7 @@ export function BoardProvider({
   children,
   difficulty,
 }: {
-  children: React.ReactElement;
+  children: React.ReactNode;
   difficulty: Difficulty;
 }) {
   const [board, setBoard] = useState<CellData[][]>(getInitialBoard(difficulty));
@@ -45,11 +48,22 @@ export function BoardProvider({
     setBoard(boardClone);
   }
 
+  function updateCellType(row: number, column: number, type: CellType): void {
+    const boardClone: CellData[][] = JSON.parse(JSON.stringify(board));
+    boardClone[row][column].type = type;
+    setBoard(boardClone);
+  }
+
   return (
     <BoardContext.Provider
       value={{
         board,
-        reveal: (row: number, column: number) => reveal(row, column),
+        reveal,
+        reset: () => setBoard(getInitialBoard(difficulty)),
+        explode: (row: number, column: number) =>
+          updateCellType(row, column, CellType.Exploded),
+        flag: (row: number, column: number) =>
+          updateCellType(row, column, CellType.Flagged),
       }}
     >
       {children}

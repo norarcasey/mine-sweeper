@@ -1,5 +1,6 @@
 export enum CellType {
   Bomb,
+  Exploded,
   Empty,
   Hidden,
   Revealed,

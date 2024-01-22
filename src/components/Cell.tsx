@@ -1,4 +1,5 @@
-import React, { MouseEvent, useState } from "react";
+import React, { MouseEvent } from "react";
+
 import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
 
 interface CellProps {
@@ -8,15 +9,16 @@ interface CellProps {
 }
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
-  const { reveal } = useBoardContext();
-  const [flagged, setFlagged] = useState(false);
+  const { explode, flag, reveal } = useBoardContext();
   const isRevealed = cell.type === CellType.Revealed;
+  const isExploded = cell.type === CellType.Exploded;
+  const isFlagged = cell.type === CellType.Flagged;
 
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
 
     if (!isRevealed) {
-      setFlagged(!flagged);
+      flag(row, column);
     }
   }
 
@@ -25,7 +27,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
     cell: CellData
   ): void {
     // Can't click a flagged cell
-    if (flagged) {
+    if (isFlagged) {
       return;
     }
 
@@ -34,20 +36,19 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
     }
 
     if (cell.count === -1) {
-      ["revealed", "fa-solid", "fa-bomb"].forEach((c) =>
-        e.currentTarget.classList.toggle(c)
-      );
+      explode(row, column);
     }
   }
 
   const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : "";
-  const isFlaggedClassName = flagged ? "fa-flag-checkered fa-solid" : "";
+  const isFlaggedClassName = isFlagged ? "fa-flag-checkered fa-solid" : "";
+  const boomedClassName = isExploded ? "revealed fa-solid fa-bomb" : "";
 
   return (
     <button
       onClick={(e) => handleOnClick(e, cell)}
       onContextMenu={handleContextMenuClick}
-      className={`cell ${isFlaggedClassName} ${isRevealedClassName}`}
+      className={`cell ${isFlaggedClassName} ${isRevealedClassName} ${boomedClassName}`}
     >
       {isRevealed && cell.count > 0 ? cell.count : ""}
     </button>

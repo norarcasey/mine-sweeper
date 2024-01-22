@@ -1,7 +1,28 @@
+.game {
+  /* Fit the game to the inner content */
+  display: inline-block;
+  margin: 20px;
+  border: ridge 10px darkgray;
+  border-top: ridge 10px #fff;
+  border-left: ridge 10px #fff;
+}
+
+.scoreboard {
+  background-color: #bdbdbd;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  font-size: 24px;
+  border: ridge 10px darkgray;
+  border-top: ridge 10px #fff;
+  border-left: ridge 10px #fff;
+}
+
 .board {
   display: flex;
   flex-direction: column;
-  margin: 20px;
 }
 
 .row {
