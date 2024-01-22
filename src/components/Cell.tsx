@@ -40,7 +40,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
     }
   }
 
-  const isRevealedClassName = isRevealed ? "revealed" : "";
+  const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : "";
   const isFlaggedClassName = flagged ? "fa-flag-checkered fa-solid" : "";
 
   return (

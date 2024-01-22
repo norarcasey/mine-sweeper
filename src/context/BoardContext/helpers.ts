@@ -12,6 +12,7 @@ function getBoardSize(difficulty: Difficulty): number[] {
   }
 }
 
+// TODO: Should I omitted know invalid coords?
 export function getAdjacentCoordinates(row: number, col: number) {
   return [
     [row - 1, col - 1], // northwest
