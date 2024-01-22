@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useBoardContext } from "../context/BoardContext";
+import { useBoardContext } from "../context/BoardContext/BoardContext";
 import { Cell } from "./Cell";
 
 export function GameBoard(): React.ReactElement {

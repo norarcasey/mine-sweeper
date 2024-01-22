@@ -1,63 +1,55 @@
-import React, { MouseEvent } from "react";
-import { useBoardContext } from "../context/BoardContext";
+import React, { MouseEvent, useState } from "react";
+import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
 
 interface CellProps {
-  row: number;
+  cell: CellData;
   column: number;
-  cell: number;
+  row: number;
 }
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
-  const { board } = useBoardContext();
+  const { reveal } = useBoardContext();
+  const [flagged, setFlagged] = useState(false);
+  const isRevealed = cell.type === CellType.Revealed;
 
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
 
-    ["fa-flag-checkered", "fa-solid"].forEach((c) =>
-      e.currentTarget.classList.toggle(c)
-    );
+    if (!isRevealed) {
+      setFlagged(!flagged);
+    }
   }
 
-  function handleOnClick(e: MouseEvent<HTMLButtonElement>, cell: number): void {
-    if (cell === 0) {
-      e.currentTarget.classList.toggle("revealed");
-
-      let bombCount = 0;
-
-      bombCount += board[row][column - 1] ?? 0;
-      bombCount += board[row][column + 1] ?? 0;
-
-      if (board[row - 1]) {
-        bombCount += board[row - 1][column - 1] ?? 0;
-        bombCount += board[row - 1][column];
-        bombCount += board[row - 1][column + 1] ?? 0;
-      }
-
-      if (board[row + 1]) {
-        bombCount += board[row + 1][column - 1] ?? 0;
-        bombCount += board[row + 1][column] ?? 0;
-        bombCount += board[row + 1][column + 1] ?? 0;
-      }
-
-      if (bombCount > 0) {
-        e.currentTarget.textContent = bombCount.toString();
-      } else {
-        // TODO: Expand the reveal
-      }
+  function handleOnClick(
+    e: MouseEvent<HTMLButtonElement>,
+    cell: CellData
+  ): void {
+    // Can't click a flagged cell
+    if (flagged) {
+      return;
     }
 
-    if (cell === 1) {
+    if (cell.count >= 0) {
+      reveal(row, column);
+    }
+
+    if (cell.count === -1) {
       ["revealed", "fa-solid", "fa-bomb"].forEach((c) =>
         e.currentTarget.classList.toggle(c)
       );
     }
   }
 
+  const isRevealedClassName = isRevealed ? "revealed" : "";
+  const isFlaggedClassName = flagged ? "fa-flag-checkered fa-solid" : "";
+
   return (
     <button
       onClick={(e) => handleOnClick(e, cell)}
       onContextMenu={handleContextMenuClick}
-      className={`cell`}
-    ></button>
+      className={`cell ${isFlaggedClassName} ${isRevealedClassName}`}
+    >
+      {isRevealed && cell.count > 0 ? cell.count : ""}
+    </button>
   );
 }
