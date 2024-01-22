@@ -9,7 +9,7 @@
 
 .scoreboard {
   background-color: #bdbdbd;
-  height: 60px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -18,6 +18,18 @@
   border: ridge 10px darkgray;
   border-top: ridge 10px #fff;
   border-left: ridge 10px #fff;
+}
+
+.reset-container {
+  border: ridge 4px darkgray;
+  border-top: ridge 4px #fff;
+  border-left: ridge 4px #fff;
+}
+
+.reset-button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
 }
 
 .board {

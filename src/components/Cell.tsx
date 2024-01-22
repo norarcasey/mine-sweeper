@@ -1,6 +1,7 @@
 import React, { MouseEvent } from "react";
 
 import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
+import { useScoreboardContext } from "../context/ScoreboardContext";
 
 interface CellProps {
   cell: CellData;
@@ -10,6 +11,7 @@ interface CellProps {
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   const { explode, flag, reveal } = useBoardContext();
+  const { setGameLost } = useScoreboardContext();
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
   const isFlagged = cell.type === CellType.Flagged;
@@ -37,6 +39,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
 
     if (cell.count === -1) {
       explode(row, column);
+      setGameLost();
     }
   }
 
