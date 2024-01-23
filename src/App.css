@@ -95,3 +95,8 @@
 .adj-8 {
   color: gray;
 }
+
+/* TODO: replace with React Font Awesome */
+.revealed.fa-bomb {
+  background-color: red;
+}
