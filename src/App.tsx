@@ -7,7 +7,7 @@ import { ScoreboardProvider } from "./context/ScoreboardContext";
 
 import "./App.css";
 
-function App(): React.ReactElement {
+export function App(): React.ReactElement {
   // TODO: allow user to set difficulty
   // TODO: Add a scoreboard, timer
 
