@@ -1,1 +1,3 @@
-export { App as MineSweeper } from "./App";
+import MineSweeper from "./MineSweeper";
+
+export { MineSweeper };

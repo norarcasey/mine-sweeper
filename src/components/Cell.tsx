@@ -1,7 +1,9 @@
 import React, { MouseEvent } from "react";
 
 import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
-import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
+import { useScoreboardContext } from "../context/ScoreboardContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBomb, faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
 
 interface CellProps {
   cell: CellData;
@@ -53,15 +55,16 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   }
 
   const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : "";
-  const isFlaggedClassName = isFlagged ? "fa-flag-checkered fa-solid" : "";
-  const boomedClassName = isExploded ? "revealed fa-solid fa-bomb" : "";
+  const isExplodedClassName = isExploded ? `revealed exploded` : "";
 
   return (
     <button
       onClick={(e) => handleOnClick(e, cell)}
       onContextMenu={handleContextMenuClick}
-      className={`cell ${isFlaggedClassName} ${isRevealedClassName} ${boomedClassName}`}
+      className={`cell ${isRevealedClassName} ${isExplodedClassName}`}
     >
+      {isExploded && <FontAwesomeIcon icon={faBomb} />}
+      {isFlagged && <FontAwesomeIcon icon={faFlagCheckered} />}
       {isRevealed && cell.count > 0 ? cell.count : ""}
     </button>
   );

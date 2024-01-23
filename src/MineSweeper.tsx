@@ -5,9 +5,13 @@ import { GameBoard } from "./components/GameBoard";
 import { Scoreboard } from "./components/Scoreboard";
 import { ScoreboardProvider } from "./context/ScoreboardContext";
 
-import "./App.css";
+import "./MineSweeper.css";
 
-export function App(): React.ReactElement {
+function MineSweeper({
+  difficulty,
+}: {
+  difficulty: Difficulty;
+}): React.ReactElement {
   // TODO: allow user to set difficulty
   // TODO: Add a scoreboard, timer
 
@@ -23,4 +27,4 @@ export function App(): React.ReactElement {
   );
 }
 
-export default App;
+export default MineSweeper;
