@@ -17,7 +17,7 @@ function MineSweeper({
 
   return (
     <div className="game">
-      <BoardProvider difficulty={Difficulty.Expert}>
+      <BoardProvider difficulty={difficulty}>
         <ScoreboardProvider>
           <Scoreboard />
           <GameBoard />

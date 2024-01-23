@@ -1,11 +1,20 @@
 {
   "name": "@norarcasey/mine-sweeper",
   "author": "Nora Casey",
-  "version": "0.1.1",
+  "version": "0.1.6",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/norarcasey/mine-sweeper.git"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "/dist",
+    "/src/MineSweeper.css",
+    "package.json"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
@@ -25,6 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "ts-build": "tsc --build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -61,9 +71,11 @@
     "@storybook/react": "^7.6.10",
     "@storybook/react-webpack5": "^7.6.10",
     "@storybook/test": "^7.6.10",
+    "css-loader": "^6.9.1",
     "eslint-plugin-storybook": "^0.6.15",
     "prop-types": "^15.8.1",
     "storybook": "^7.6.10",
+    "style-loader": "^3.3.4",
     "webpack": "^5.89.0"
   }
 }
