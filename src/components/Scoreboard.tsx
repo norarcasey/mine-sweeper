@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { faSmile, faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useBoardContext } from "../context/BoardContext";
 import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
+import { Timer } from "./Timer";
 
 export function Scoreboard(): React.ReactElement {
   const { reset } = useBoardContext();
   const { gameState, resetGameState, score } = useScoreboardContext();
   const isGameLost = gameState === GameState.Lost;
+  const [startTime, setStartTime] = useState(Date.now());
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    const ticks = setInterval(() => {
+      if (gameState === GameState.Active) {
+        setTimer(Date.now() - startTime);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(ticks);
+    };
+  }, [startTime, gameState]);
 
   return (
     <div className="scoreboard">
@@ -19,6 +34,8 @@ export function Scoreboard(): React.ReactElement {
           onClick={() => {
             reset();
             resetGameState();
+            setStartTime(Date.now());
+            setTimer(0);
           }}
         >
           <FontAwesomeIcon
@@ -28,7 +45,7 @@ export function Scoreboard(): React.ReactElement {
           />
         </button>
       </div>
-      <div className="timer-display">00:00</div>
+      <Timer timer={timer} />
     </div>
   );
 }

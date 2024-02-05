@@ -13,7 +13,7 @@ interface CellProps {
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   const { explode, flag, reveal } = useBoardContext();
-  const { setGameLost, incrementScore, decrementScore, isGameOver } =
+  const { startGame, setGameLost, incrementScore, decrementScore, isGameOver } =
     useScoreboardContext();
 
   const isRevealed = cell.type === CellType.Revealed;
@@ -46,6 +46,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
 
     if (cell.count >= 0) {
       reveal(row, column);
+      startGame();
     }
 
     if (cell.count === -1) {

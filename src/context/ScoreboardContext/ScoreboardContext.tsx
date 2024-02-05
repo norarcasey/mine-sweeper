@@ -9,6 +9,7 @@ export enum GameState {
 
 interface UseScoreBoardContext {
   gameState: GameState;
+  startGame: () => void;
   setGameLost: () => void;
   resetGameState: () => void;
   incrementScore: () => void;
@@ -44,6 +45,10 @@ export function ScoreboardProvider({
     setFlagCount(flagCount - 1);
   }
 
+  function startGame(): void {
+    setGameState(GameState.Active);
+  }
+
   const isGameOver =
     gameState === GameState.Lost || gameState === GameState.Won;
 
@@ -51,6 +56,7 @@ export function ScoreboardProvider({
     <ScoreboardContext.Provider
       value={{
         gameState,
+        startGame,
         setGameLost,
         resetGameState,
         incrementScore,
