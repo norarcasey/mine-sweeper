@@ -36,7 +36,7 @@ export function BoardProvider({
   const [board, setBoard] = useState<CellData[][]>(getInitialBoard(difficulty));
 
   function reveal(row: number, column: number): void {
-    const boardClone: CellData[][] = JSON.parse(JSON.stringify(board));
+    const boardClone: CellData[][] = board.map((row) => [...row]);
 
     const cell = boardClone[row][column];
     cell.type = CellType.Revealed;
@@ -49,7 +49,7 @@ export function BoardProvider({
   }
 
   function updateCellType(row: number, column: number, type: CellType): void {
-    const boardClone: CellData[][] = JSON.parse(JSON.stringify(board));
+    const boardClone: CellData[][] = board.map((row) => [...row]);
     const cell = boardClone[row][column];
 
     if (cell.type === type) {
