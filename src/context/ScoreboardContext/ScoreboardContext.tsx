@@ -11,6 +11,7 @@ interface UseScoreBoardContext {
   gameState: GameState;
   startGame: () => void;
   setGameLost: () => void;
+  setGameWon: () => void;
   resetGameState: () => void;
   incrementScore: () => void;
   decrementScore: () => void;
@@ -49,6 +50,10 @@ export function ScoreboardProvider({
     setGameState(GameState.Active);
   }
 
+  function setGameWon(): void {
+    setGameState(GameState.Won);
+  }
+
   const isGameOver =
     gameState === GameState.Lost || gameState === GameState.Won;
 
@@ -58,6 +63,7 @@ export function ScoreboardProvider({
         gameState,
         startGame,
         setGameLost,
+        setGameWon,
         resetGameState,
         incrementScore,
         decrementScore,

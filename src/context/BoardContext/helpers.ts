@@ -26,7 +26,10 @@ export function getAdjacentCoordinates(row: number, col: number) {
   ];
 }
 
-export function getInitialBoard(difficulty: Difficulty) {
+export function getInitialBoard(difficulty: Difficulty): {
+  initialBoard: CellData[][];
+  mineIds: number[];
+} {
   const BOARD_SIZE = getBoardSize(difficulty);
 
   // Using Array.from makes each cell different and
@@ -48,6 +51,8 @@ export function getInitialBoard(difficulty: Difficulty) {
     }
   }
 
+  mineIds.sort((a, b) => a - b);
+
   for (const id of mineIds) {
     const col = id % BOARD_SIZE[1];
     const row = Math.floor(id / BOARD_SIZE[1]);
@@ -65,5 +70,5 @@ export function getInitialBoard(difficulty: Difficulty) {
     });
   }
 
-  return initialBoard;
+  return { initialBoard, mineIds };
 }

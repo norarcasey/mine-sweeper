@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { faSmile, faFaceFrown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSmile,
+  faFaceFrown,
+  faGrinHearts,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useBoardContext } from "../context/BoardContext";
@@ -10,6 +14,7 @@ export function Scoreboard(): React.ReactElement {
   const { reset } = useBoardContext();
   const { gameState, resetGameState, score } = useScoreboardContext();
   const isGameLost = gameState === GameState.Lost;
+  const isGameWon = gameState === GameState.Won;
   const [startTime, setStartTime] = useState(Date.now());
   const [timer, setTimer] = useState(0);
 
@@ -42,7 +47,7 @@ export function Scoreboard(): React.ReactElement {
           }}
         >
           <FontAwesomeIcon
-            icon={isGameLost ? faFaceFrown : faSmile}
+            icon={isGameLost ? faFaceFrown : isGameWon ? faGrinHearts : faSmile}
             size="2x"
             color="yellow"
           />
