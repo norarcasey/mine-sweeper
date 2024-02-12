@@ -13,7 +13,6 @@ function MineSweeper({
   difficulty: Difficulty;
 }): React.ReactElement {
   // TODO: allow user to set difficulty
-  // TODO: Add a scoreboard, timer
 
   return (
     <div className="game">

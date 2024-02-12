@@ -74,6 +74,10 @@ code {
   align-items: center;
 }
 
+.flagged {
+  color: black;
+}
+
 .revealed {
   background-color: #bdbdbd;
   border: solid 1px gray;
@@ -81,6 +85,7 @@ code {
 
 .exploded {
   background-color: red;
+  color: black;
 }
 
 .adj-1 {

@@ -57,12 +57,13 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
 
   const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : "";
   const isExplodedClassName = isExploded ? `revealed exploded` : "";
+  const isFlaggedClassName = isFlagged ? "flagged" : "";
 
   return (
     <button
       onClick={(e) => handleOnClick(e, cell)}
       onContextMenu={handleContextMenuClick}
-      className={`cell ${isRevealedClassName} ${isExplodedClassName}`}
+      className={`cell ${isRevealedClassName} ${isExplodedClassName} ${isFlaggedClassName}`}
     >
       {isExploded && <FontAwesomeIcon icon={faBomb} />}
       {isFlagged && <FontAwesomeIcon icon={faFlagCheckered} />}
