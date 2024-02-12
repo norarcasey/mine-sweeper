@@ -15,6 +15,9 @@ export function Scoreboard(): React.ReactElement {
 
   useEffect(() => {
     const ticks = setInterval(() => {
+      if (gameState === GameState.Inactive) {
+        setStartTime(Date.now());
+      }
       if (gameState === GameState.Active) {
         setTimer(Date.now() - startTime);
       }
