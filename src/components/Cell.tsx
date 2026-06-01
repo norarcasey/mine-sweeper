@@ -9,9 +9,15 @@ interface CellProps {
   cell: CellData;
   column: number;
   row: number;
+  tabIndex: number;
 }
 
-export function Cell({ cell, row, column }: CellProps): React.ReactElement {
+export function Cell({
+  cell,
+  row,
+  column,
+  tabIndex,
+}: CellProps): React.ReactElement {
   const { explode, flag, reveal, flags, board } = useBoardContext();
   const { startGame, setGameLost, setGameWon, isGameOver, gameState } =
     useScoreboardContext();
@@ -95,6 +101,8 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   return (
     <button
       type="button"
+      role="gridcell"
+      tabIndex={tabIndex}
       aria-label={ariaLabel}
       aria-keyshortcuts="F"
       onClick={handleOnClick}

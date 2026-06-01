@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   board region and the reset button are labelled, the mine counter and timer
   expose screen-reader text, and wins and losses are announced through a live
   region.
+- **Keyboard grid navigation.** The board is an ARIA grid with a roving
+  tabindex: arrow keys move between cells, Home/End jump to the row ends, and
+  Ctrl+Home/Ctrl+End jump to the grid corners, with a visible focus outline.
 
 ### Internal
 
