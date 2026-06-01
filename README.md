@@ -2,6 +2,8 @@
 
 A typescript and react version of mine sweeper.
 
+![A completed game of Mine Sweeper, with every mine flagged and the timer stopped at 22 seconds](docs/screenshot.png)
+
 ## Get started
 
 ```
