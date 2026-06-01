@@ -5,6 +5,32 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-06-02
+
+### Changed
+
+- **FontAwesome upgraded to v7.** Runtime dependencies bumped to
+  `@fortawesome/fontawesome-svg-core` / `free-solid-svg-icons` `^7` and
+  `@fortawesome/react-fontawesome` `^3` (from `6.7.2` / `0.2.6`). The five icons
+  the component renders are unchanged; `react-fontawesome` v3 keeps the same
+  `react ^18 || ^19` peer range, so the package's `peerDependencies` are
+  untouched.
+- **The published bundle now targets ES2020 instead of ES5.** React 18/19
+  already require a modern runtime, so the old `target: "es5"` only added dead
+  downleveling helpers; the emitted `dist/` is now leaner modern JavaScript.
+  Consumers on environments that support React 18+ are unaffected.
+
+### Internal
+
+- Develop and test against **React 19** (the dev/test `react` / `react-dom` and
+  their `@types` moved from 18 to 19; `peerDependencies` already allowed 19).
+  Modernized the test stack to **Testing Library 16** + **user-event 14**, and
+  upgraded **TypeScript to 6** and **@types/node to 22**.
+- Cleared all security advisories: a transitive `@babel/runtime` ReDoS warning
+  is resolved (`yarn audit` now reports zero vulnerabilities). Along the way the
+  ambient CSS module declaration was corrected to `declare module "*.css"`, which
+  TypeScript 6 requires for the side-effect stylesheet import.
+
 ## [0.6.0] - 2026-06-02
 
 ### Added
@@ -139,6 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Earlier releases (0.1.x – 0.3.0) predate this changelog; see the git history
 for details. 0.3.0 added winning game states.
 
+[0.7.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/norarcasey/mine-sweeper/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.4.1...v0.5.0
