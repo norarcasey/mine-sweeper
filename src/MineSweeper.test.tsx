@@ -159,6 +159,71 @@ describe("MineSweeper — outcomes", () => {
   });
 });
 
+// --- chording ----------------------------------------------------------------
+
+describe("MineSweeper — chording", () => {
+  // Mines at (0,1) and (8,8): opening (0,0) reveals just itself as a "1", so
+  // there is a flagged number to chord against without auto-winning.
+  const twoMineBoard = () =>
+    vi.mocked(getInitialBoard).mockReturnValueOnce(
+      buildBoard(9, 9, [
+        [0, 1],
+        [8, 8],
+      ])
+    );
+
+  it("reveals the un-flagged neighbours of a correctly flagged number", () => {
+    twoMineBoard();
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+
+    fireEvent.click(cells(container)[0]); // (0,0) -> "1", reveals only itself
+    fireEvent.contextMenu(cells(container)[1]); // flag the real mine (0,1)
+    expect(revealed(container).length).toBe(1);
+
+    fireEvent.contextMenu(cells(container)[0]); // chord the "1"
+    // (1,0) and (1,1) open; the flagged mine (0,1) is left alone.
+    expect(revealed(container).length).toBeGreaterThan(1);
+    expect(face(container)).toBe("face-smile");
+    expect(bombs(container)).toHaveLength(0);
+  });
+
+  it("detonates when chording a number whose flag is misplaced", () => {
+    twoMineBoard();
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+
+    fireEvent.click(cells(container)[0]); // (0,0) -> "1"
+    fireEvent.contextMenu(cells(container)[10]); // wrongly flag (1,1), not the mine
+
+    fireEvent.contextMenu(cells(container)[0]); // chord -> reveals the real mine (0,1)
+    expect(face(container)).toBe("face-frown");
+    expect(bombs(container).length).toBeGreaterThan(0);
+  });
+
+  it("does nothing when the surrounding flag count does not match", () => {
+    twoMineBoard();
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+
+    fireEvent.click(cells(container)[0]); // (0,0) -> "1", no flags placed
+    fireEvent.contextMenu(cells(container)[0]); // chord with 0 flags != 1
+
+    expect(revealed(container).length).toBe(1);
+    expect(bombs(container)).toHaveLength(0);
+    expect(face(container)).toBe("face-smile");
+  });
+
+  it("chords from a keyboard/left-click activation too", () => {
+    twoMineBoard();
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+
+    fireEvent.click(cells(container)[0]); // (0,0) -> "1"
+    fireEvent.contextMenu(cells(container)[1]); // flag the mine (0,1)
+
+    fireEvent.click(cells(container)[0]); // activating the revealed number chords
+    expect(revealed(container).length).toBeGreaterThan(1);
+    expect(face(container)).toBe("face-smile");
+  });
+});
+
 // --- characterization (pin current behavior before the refactor) -------------
 
 describe("MineSweeper — characterization", () => {

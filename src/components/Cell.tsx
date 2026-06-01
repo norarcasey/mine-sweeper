@@ -18,7 +18,7 @@ export function Cell({
   column,
   tabIndex,
 }: CellProps): React.ReactElement {
-  const { explode, flag, reveal, flags, board } = useBoardContext();
+  const { explode, flag, reveal, chord, flags, board } = useBoardContext();
   const { startGame, setGameLost, setGameWon, isGameOver, gameState } =
     useScoreboardContext();
 
@@ -44,9 +44,30 @@ export function Cell({
     }
   }
 
+  // Chording on a revealed number: reveal its un-flagged neighbours in one
+  // move, detonating any mine the player failed to flag.
+  function chordCell(): void {
+    if (isGameOver || cell.count <= 0) {
+      return;
+    }
+
+    const { exploded, won } = chord(row, column);
+
+    if (exploded) {
+      setGameLost();
+    } else if (won) {
+      setGameWon();
+    }
+  }
+
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
-    toggleFlag();
+    // Right-clicking a revealed number chords; anywhere else toggles a flag.
+    if (isRevealed) {
+      chordCell();
+    } else {
+      toggleFlag();
+    }
   }
 
   // Reveal is keyboard-accessible by default (Enter/Space activate the button);
@@ -59,7 +80,14 @@ export function Cell({
   }
 
   function handleOnClick(): void {
-    if (isFlagged || isRevealed || isGameOver) {
+    if (isFlagged || isGameOver) {
+      return;
+    }
+
+    // Activating an already-revealed number (click or Enter/Space) chords it,
+    // giving keyboard users the same shortcut as a right-click.
+    if (isRevealed) {
+      chordCell();
       return;
     }
 
