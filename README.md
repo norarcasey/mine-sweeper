@@ -6,8 +6,20 @@ A typescript and react version of mine sweeper.
 
 ## Get started
 
+The component is developed and previewed in Storybook:
+
 ```
 yarn storybook
+```
+
+## Develop
+
+```
+yarn test        # run the Vitest suite
+yarn test:watch  # watch mode
+yarn lint        # ESLint
+yarn typecheck   # tsc --noEmit
+yarn ts-build    # build the publishable library (dist/)
 ```
 
 ## Deploy
@@ -17,7 +29,7 @@ from source, tag the release, and publish it.
 
 ```
 # 1. Make sure tests pass and the working tree is clean
-npm test -- --watchAll=false
+yarn test
 
 # 2. Add a CHANGELOG.md entry for the new version
 
@@ -32,8 +44,8 @@ npm publish
 git push --follow-tags
 ```
 
-> Note: `npm run build` is the Create React App **app** build and is not used
-> for publishing. The published library is built by `npm run ts-build`
-> (`tsconfig.build.json`), which `prepublishOnly` runs automatically.
+> Note: the published library is built by `yarn ts-build`
+> (`tsconfig.build.json`), which `prepublishOnly` runs automatically. Tests run
+> on Vitest and Storybook builds with Vite.
 
 See [CHANGELOG.md](./CHANGELOG.md) for release notes.

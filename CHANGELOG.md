@@ -5,6 +5,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Internal
+
+- Migrated off the deprecated Create React App toolchain. Tests now run on
+  **Vitest** (was `react-scripts test` / Jest 27), Storybook runs on the
+  **Vite builder** at **Storybook 10** (was webpack 5 + the CRA preset), and
+  `react-scripts` and its webpack/CRA remnants are removed. Added a flat-config
+  **ESLint** setup (typescript-eslint + react-hooks), bumped TypeScript to 5
+  with `moduleResolution: "bundler"`, and CI now lints, type-checks, tests, and
+  builds both the library and Storybook on Node 20 and 22. No change to the
+  published package's runtime dependencies or output.
+
 ## [0.5.0] - 2026-06-01
 
 ### Changed
