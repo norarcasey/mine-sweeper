@@ -30,7 +30,7 @@ const bombs = (c: HTMLElement) => c.querySelectorAll('[data-icon="bomb"]');
 const flags = (c: HTMLElement) =>
   c.querySelectorAll('[data-icon="flag-checkered"]');
 const counter = (c: HTMLElement) =>
-  c.querySelector(".mine-count")?.textContent;
+  c.querySelector('.mine-count [aria-hidden="true"]')?.textContent;
 const face = (c: HTMLElement) =>
   c.querySelector(".reset-button svg")?.getAttribute("data-icon");
 
@@ -238,5 +238,77 @@ describe("MineSweeper — characterization", () => {
       expect(cell.querySelector('[data-icon="flag-checkered"]')).toBeNull();
       expect(cell.classList.contains("revealed")).toBe(false);
     }
+  });
+});
+
+// --- accessibility -----------------------------------------------------------
+
+describe("MineSweeper — accessibility", () => {
+  const label = (cell: HTMLButtonElement) => cell.getAttribute("aria-label");
+
+  it("labels each cell with its position and state", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    expect(label(cells(container)[0])).toBe("Row 1, column 1, hidden");
+
+    fireEvent.click(cells(container)[40]); // safe opener (4,4) -> empty
+    expect(label(cells(container)[40])).toBe("Row 5, column 5, empty");
+  });
+
+  it("labels a revealed numbered cell with its adjacent-mine count", () => {
+    vi.mocked(getInitialBoard).mockReturnValueOnce(
+      buildBoard(9, 9, [
+        [0, 1],
+        [8, 8],
+      ])
+    );
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.click(cells(container)[0]); // (0,0) -> 1 adjacent mine
+    expect(label(cells(container)[0])).toBe("Row 1, column 1, 1 adjacent mine");
+  });
+
+  it("flags a cell with the F key and reflects it in the label", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.keyDown(cells(container)[0], { key: "f" });
+    expect(flags(container)).toHaveLength(1);
+    expect(label(cells(container)[0])).toBe("Row 1, column 1, flagged");
+    expect(counter(container)).toBe("009");
+
+    fireEvent.keyDown(cells(container)[0], { key: "f" }); // toggle off
+    expect(flags(container)).toHaveLength(0);
+    expect(label(cells(container)[0])).toBe("Row 1, column 1, hidden");
+  });
+
+  it("labels the board region and the reset button", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    expect(
+      container.querySelector('[role="group"][aria-label="Minesweeper board"]')
+    ).not.toBeNull();
+    expect(
+      container.querySelector(".reset-button")?.getAttribute("aria-label")
+    ).toBe("New game");
+  });
+
+  it("announces win and loss in a live region", () => {
+    const status = (c: HTMLElement) =>
+      c.querySelector('[role="status"]')?.textContent;
+
+    // Loss
+    vi.mocked(getInitialBoard).mockReturnValueOnce(
+      buildBoard(9, 9, [
+        [0, 1],
+        [8, 8],
+      ])
+    );
+    const lost = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    expect(status(lost.container)).toBe("");
+    fireEvent.click(cells(lost.container)[0]); // safe
+    fireEvent.click(cells(lost.container)[1]); // mine
+    expect(status(lost.container)).toBe("You lost!");
+
+    // Win (single corner mine floods the rest on the opener)
+    vi.mocked(getInitialBoard).mockReturnValueOnce(buildBoard(9, 9, [[8, 8]]));
+    const won = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.click(cells(won.container)[0]);
+    expect(status(won.container)).toBe("You won!");
   });
 });

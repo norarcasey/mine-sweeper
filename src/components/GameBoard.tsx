@@ -7,7 +7,7 @@ export function GameBoard(): React.ReactElement {
   const { board } = useBoardContext();
 
   return (
-    <div className="board">
+    <div className="board" role="group" aria-label="Minesweeper board">
       {board.map((row, rowIndex) => (
         <div key={`row-${rowIndex}`} className="row">
           {row.map((cell, cellIndex) => (
