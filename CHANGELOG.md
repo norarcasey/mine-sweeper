@@ -5,6 +5,27 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-06-01
+
+### Changed
+
+- **Dependency hygiene.** `react` and `react-dom` are now `peerDependencies`
+  (a consuming app provides its single copy), and the build/test tooling
+  (`react-scripts`, `typescript`, `@testing-library/*`, `@types/*`,
+  `web-vitals`) moved from `dependencies` to `devDependencies`. Installing the
+  package no longer drags the entire Create React App toolchain into a
+  consumer's `node_modules`; `dependencies` is now just the three FontAwesome
+  packages actually imported at runtime.
+- Bumped FontAwesome to `^6.7.2` / `react-fontawesome` to `^0.2.6` (the safe,
+  backward-compatible upgrades).
+
+### Fixed
+
+- **Clean installs now work on Node 22.** Pinned `strip-ansi` to `^6` via
+  `resolutions` so the Create React App / Jest 27 reporter stack resolves the
+  CommonJS build instead of the ESM-only `strip-ansi@7`, which broke
+  `react-scripts test` on a fresh install. CI now runs on Node 20 and 22.
+
 ## [0.4.1] - 2026-06-01
 
 ### Fixed
@@ -73,6 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Earlier releases (0.1.x – 0.3.0) predate this changelog; see the git history
 for details. 0.3.0 added winning game states.
 
+[0.5.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/norarcasey/mine-sweeper/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/norarcasey/mine-sweeper/compare/v0.3.0...v0.3.1
