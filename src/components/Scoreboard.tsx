@@ -9,40 +9,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useBoardContext } from "../context/BoardContext";
 import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
 import { Timer } from "./Timer";
+import { formatCounter } from "./formatCounter";
 
 export function Scoreboard(): React.ReactElement {
-  const { reset } = useBoardContext();
-  const { gameState, resetGameState, score } = useScoreboardContext();
+  const { reset, flags, mineCount } = useBoardContext();
+  const { gameState, resetGameState } = useScoreboardContext();
   const isGameLost = gameState === GameState.Lost;
   const isGameWon = gameState === GameState.Won;
-  const [startTime, setStartTime] = useState(Date.now());
   const [timer, setTimer] = useState(0);
 
-  useEffect(() => {
-    const ticks = setInterval(() => {
-      if (gameState === GameState.Inactive) {
-        setStartTime(Date.now());
-      }
-      if (gameState === GameState.Active) {
-        setTimer(Date.now() - startTime);
-      }
-    }, 1000);
+  const minesRemaining = mineCount - flags.length;
 
-    return () => {
-      clearInterval(ticks);
-    };
-  }, [startTime, gameState]);
+  useEffect(() => {
+    // Only run the clock while the game is active; this avoids a re-render
+    // every second when idle and freezes the timer on win/loss.
+    if (gameState !== GameState.Active) {
+      return;
+    }
+
+    // Resume from the current elapsed time (0 on a fresh game).
+    const start = Date.now() - timer;
+    const ticks = setInterval(() => setTimer(Date.now() - start), 1000);
+
+    return () => clearInterval(ticks);
+    // `timer` is read only to resume on the active transition, not to retick.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState]);
 
   return (
     <div className="scoreboard">
-      <div className="mine-count">{score}</div>
+      <div className="mine-count">{formatCounter(minesRemaining)}</div>
       <div className="reset-container">
         <button
           className="reset-button"
           onClick={() => {
             reset();
             resetGameState();
-            setStartTime(Date.now());
             setTimer(0);
           }}
         >
