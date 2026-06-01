@@ -33,11 +33,19 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Lint
+        run: yarn lint
+
       - name: Typecheck
-        run: yarn tsc --noEmit
+        run: yarn typecheck
 
       - name: Test
         run: yarn test
 
       - name: Build library
         run: yarn ts-build
+
+      - name: Build Storybook
+        run: yarn build-storybook
+        env:
+          STORYBOOK_DISABLE_TELEMETRY: "1"
