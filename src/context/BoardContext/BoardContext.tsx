@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState } from "react";
 
-import { getAdjacentCoordinates, getInitialBoard } from "./helpers";
+import {
+  getAdjacentCoordinates,
+  getInitialBoard,
+  isFlagWin,
+  isRevealWin,
+} from "./helpers";
 import { Difficulty, CellData, CellType } from "./types";
 
 const BoardContext = createContext<{
@@ -54,23 +59,7 @@ export function BoardProvider({
       revealAdjacent(row, column, boardClone);
     }
 
-    const cellsToMonitor: number[] = [];
-
-    for (let i = 0; i < boardClone.length; i++) {
-      for (let j = 0; j < boardClone[i].length; j++) {
-        if (
-          [CellType.Hidden, CellType.Bomb, CellType.Flagged].includes(
-            boardClone[i][j].type
-          )
-        ) {
-          cellsToMonitor.push(boardClone[i].length * i + j);
-        }
-      }
-    }
-
-    console.log({ cellsToMonitor });
-
-    const boardComplete = mines.every((m, i) => m === cellsToMonitor[i]);
+    const boardComplete = isRevealWin(boardClone);
 
     if (boardComplete) {
       // put flags on all mines
@@ -137,9 +126,7 @@ export function BoardProvider({
           setFlags(flagClone);
           updateCellType(row, column, CellType.Flagged);
 
-          const boardComplete = mines.every(
-            (val, index) => val === flagClone[index]
-          );
+          const boardComplete = isFlagWin(mines, flagClone);
 
           const boardClone = board.map((row) => [...row]);
 

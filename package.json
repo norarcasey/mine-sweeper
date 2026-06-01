@@ -34,7 +34,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "ts-build": "tsc --build",
+    "clean": "rm -rf dist",
+    "ts-build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run clean && npm run ts-build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

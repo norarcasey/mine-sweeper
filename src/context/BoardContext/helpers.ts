@@ -1,4 +1,3 @@
-// TODO: Add unit tests for these functions
 import { CellData, CellType, Difficulty } from "./types";
 
 function getBoardSize(difficulty: Difficulty): number[] {
@@ -71,4 +70,26 @@ export function getInitialBoard(difficulty: Difficulty): {
   }
 
   return { initialBoard, mineIds };
+}
+
+/**
+ * Flag-based win: the player has flagged all and only the bombs.
+ * Both arrays are kept sorted ascending by their producers, so an
+ * exact length + element match means the flag set equals the mine set.
+ */
+export function isFlagWin(mineIds: number[], flaggedIds: number[]): boolean {
+  return (
+    mineIds.length === flaggedIds.length &&
+    mineIds.every((id, i) => id === flaggedIds[i])
+  );
+}
+
+/**
+ * Reveal-based win: every non-bomb cell has been revealed. Flags are
+ * irrelevant to this path — bombs are identified by count === -1.
+ */
+export function isRevealWin(board: CellData[][]): boolean {
+  return board.every((row) =>
+    row.every((cell) => cell.count === -1 || cell.type === CellType.Revealed)
+  );
 }
