@@ -1,6 +1,7 @@
 import {
   getAdjacentCoordinates,
   getInitialBoard,
+  getSafeCellIds,
   isFlagWin,
   isRevealWin,
 } from "./helpers";
@@ -145,6 +146,55 @@ describe("getInitialBoard", () => {
   });
 });
 
+describe("getSafeCellIds", () => {
+  it("returns the clicked cell plus all eight neighbours mid-board", () => {
+    // 9x9 board, click center (4,4) => id 40.
+    expect(getSafeCellIds(4, 4, 9, 9).sort((a, b) => a - b)).toEqual([
+      30, 31, 32, 39, 40, 41, 48, 49, 50,
+    ]);
+  });
+
+  it("clamps to on-board neighbours at a corner", () => {
+    // (0,0) has only E, S, SE neighbours on the board.
+    expect(getSafeCellIds(0, 0, 9, 9).sort((a, b) => a - b)).toEqual([
+      0, 1, 9, 10,
+    ]);
+  });
+
+  it("clamps to on-board neighbours at an edge", () => {
+    // Top edge (0,4): the northern row is off-board.
+    expect(getSafeCellIds(0, 4, 9, 9).sort((a, b) => a - b)).toEqual([
+      3, 4, 5, 12, 13, 14,
+    ]);
+  });
+});
+
+describe("getInitialBoard with safe cells (first-click safety)", () => {
+  it("never places a mine on a safe id", () => {
+    const safeIds = getSafeCellIds(4, 4, 9, 9);
+    const { mineIds } = getInitialBoard(Difficulty.Beginner, safeIds);
+
+    safeIds.forEach((id) => expect(mineIds).not.toContain(id));
+  });
+
+  it("still places the full mine count when cells are excluded", () => {
+    const safeIds = getSafeCellIds(4, 4, 9, 9);
+    const { mineIds } = getInitialBoard(Difficulty.Beginner, safeIds);
+
+    expect(mineIds).toHaveLength(10);
+  });
+
+  it("leaves the clicked cell with count 0 so it opens a region", () => {
+    // All eight neighbours are safe, so the clicked cell has no adjacent
+    // mines and will trigger the flood-fill reveal.
+    const safeIds = getSafeCellIds(4, 4, 9, 9);
+    const { initialBoard } = getInitialBoard(Difficulty.Beginner, safeIds);
+
+    expect(initialBoard[4][4].count).toBe(0);
+    expect(initialBoard[4][4].type).toBe(CellType.Empty);
+  });
+});
+
 describe("isFlagWin", () => {
   it("wins when the flagged set is exactly the mine set", () => {
     expect(isFlagWin([2, 5, 8], [2, 5, 8])).toBe(true);
@@ -168,6 +218,11 @@ describe("isFlagWin", () => {
 
   it("does not win with no flags placed", () => {
     expect(isFlagWin([2, 5, 8], [])).toBe(false);
+  });
+
+  it("does not win before any mines exist (empty board)", () => {
+    // Guards the pre-first-reveal state where mines have not been placed yet.
+    expect(isFlagWin([], [])).toBe(false);
   });
 });
 
