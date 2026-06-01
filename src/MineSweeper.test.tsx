@@ -158,3 +158,85 @@ describe("MineSweeper — outcomes", () => {
     expect(face(container)).toBe("face-grin-hearts");
   });
 });
+
+// --- characterization (pin current behavior before the refactor) -------------
+
+describe("MineSweeper — characterization", () => {
+  it("keeps flags placed before the first reveal", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.contextMenu(cells(container)[10]); // flag before any reveal
+    expect(flags(container)).toHaveLength(1);
+
+    fireEvent.click(cells(container)[40]); // first reveal places mines
+    // The pre-placed flag is re-applied onto the regenerated board.
+    expect(flags(container)).toHaveLength(1);
+    expect(
+      cells(container)[10].querySelector('[data-icon="flag-checkered"]')
+    ).not.toBeNull();
+  });
+
+  it("does not reveal a flagged cell via the cascade, and a stray flag blocks the reveal-win", () => {
+    vi.mocked(getInitialBoard).mockReturnValueOnce(buildBoard(9, 9, [[8, 8]]));
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.contextMenu(cells(container)[40]); // flag the center first
+    fireEvent.click(cells(container)[0]); // opener would otherwise flood the center
+
+    expect(cells(container)[40].classList.contains("revealed")).toBe(false);
+    expect(flags(container)).toHaveLength(1);
+    // Not a win: the flagged safe cell is never revealed.
+    expect(face(container)).toBe("face-smile");
+  });
+
+  it("drives the counter to 000 on a reveal win", () => {
+    // 10 mines clustered in a corner so opening the opposite corner floods the rest.
+    const mines: [number, number][] = [];
+    for (let r = 7; r <= 8; r++) for (let c = 4; c <= 8; c++) mines.push([r, c]);
+    vi.mocked(getInitialBoard).mockReturnValueOnce(buildBoard(9, 9, mines));
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+
+    fireEvent.click(cells(container)[0]);
+    expect(face(container)).toBe("face-grin-hearts");
+    expect(counter(container)).toBe("000");
+  });
+
+  it("shows a negative counter when over-flagging without a false win", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    for (let i = 0; i < 11; i++) fireEvent.contextMenu(cells(container)[i]); // 11 > 10 mines
+    expect(counter(container)).toBe("-01");
+    expect(face(container)).toBe("face-smile");
+  });
+
+  it("treats clicking an already-revealed cell as a no-op", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.click(cells(container)[40]);
+    const before = revealed(container).length;
+
+    fireEvent.click(revealed(container)[0]); // click an already-revealed cell
+    expect(revealed(container).length).toBe(before);
+    expect(bombs(container)).toHaveLength(0);
+    expect(face(container)).toBe("face-smile");
+  });
+
+  it("restores a flagged numbered cell and a flagged mine when unflagged", () => {
+    // Two mines so flagging one isn't a flag-win (which would end the game and
+    // block the unflag).
+    vi.mocked(getInitialBoard).mockReturnValueOnce(
+      buildBoard(9, 9, [
+        [0, 1],
+        [8, 8],
+      ])
+    );
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    fireEvent.click(cells(container)[0]); // (0,0) is a number -> reveals only itself
+
+    // (0,2) is a hidden numbered cell (adjacent to the mine); (0,1) is the mine.
+    for (const idx of [2, 1]) {
+      const cell = cells(container)[idx];
+      fireEvent.contextMenu(cell); // flag
+      expect(cell.querySelector('[data-icon="flag-checkered"]')).not.toBeNull();
+      fireEvent.contextMenu(cell); // unflag -> restored, still hidden
+      expect(cell.querySelector('[data-icon="flag-checkered"]')).toBeNull();
+      expect(cell.classList.contains("revealed")).toBe(false);
+    }
+  });
+});
