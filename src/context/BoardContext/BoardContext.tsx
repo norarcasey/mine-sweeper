@@ -19,6 +19,10 @@ const BoardContext = createContext<{
   reset: () => void;
   explode: (row: number, column: number) => void;
   flag: (row: number, column: number) => boolean;
+  chord: (
+    row: number,
+    column: number
+  ) => { exploded: boolean; won: boolean };
 } | null>(null);
 
 // Deep clone so updates never mutate the cell objects held by current state.
@@ -101,11 +105,77 @@ export function BoardProvider({
     return boardComplete;
   }
 
+  // "Chording": once the player has placed as many flags around a revealed
+  // number as the number itself, this reveals every remaining un-flagged
+  // neighbour in one move. If a flag was placed wrongly, the un-flagged mine it
+  // left behind is revealed and detonates — exactly like clicking it directly.
+  function chord(
+    row: number,
+    column: number
+  ): { exploded: boolean; won: boolean } {
+    const cols = board[0].length;
+    const flagged = new Set(flags);
+
+    const adjacent = getAdjacentCoordinates(row, column).filter(
+      ([adjRow, adjCol]) => board[adjRow]?.[adjCol] !== undefined
+    );
+
+    // Only fire when the surrounding flag count matches the cell's number —
+    // the player's assertion that every adjacent mine is already flagged.
+    const adjacentFlagCount = adjacent.filter(([adjRow, adjCol]) =>
+      flagged.has(adjRow * cols + adjCol)
+    ).length;
+
+    if (adjacentFlagCount !== board[row][column].count) {
+      return { exploded: false, won: false };
+    }
+
+    const nextBoard = cloneBoard(board);
+    let exploded = false;
+
+    for (const [adjRow, adjCol] of adjacent) {
+      const id = adjRow * cols + adjCol;
+      const adjCell = nextBoard[adjRow][adjCol];
+
+      // Flagged cells are the player's marked mines and stay untouched;
+      // already-revealed neighbours need no work.
+      if (flagged.has(id) || adjCell.type === CellType.Revealed) {
+        continue;
+      }
+
+      if (adjCell.count === -1) {
+        // A misplaced flag: this un-flagged mine goes off.
+        adjCell.type = CellType.Exploded;
+        exploded = true;
+      } else {
+        adjCell.type = CellType.Revealed;
+        if (adjCell.count === 0) {
+          revealAdjacent(adjRow, adjCol, nextBoard, flagged);
+        }
+      }
+    }
+
+    setBoard(nextBoard);
+
+    if (exploded) {
+      return { exploded: true, won: false };
+    }
+
+    const won = isRevealWin(nextBoard);
+    if (won) {
+      // Flag every mine so the mines-remaining counter reads 0.
+      setFlags([...mines]);
+    }
+
+    return { exploded: false, won };
+  }
+
   return (
     <BoardContext.Provider
       value={{
         board,
         reveal,
+        chord,
         mines,
         // The difficulty's enum value is the total number of mines.
         mineCount: difficulty,
