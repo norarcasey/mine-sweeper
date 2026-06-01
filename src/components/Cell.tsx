@@ -12,13 +12,13 @@ interface CellProps {
 }
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
-  const { explode, flag, reveal } = useBoardContext();
+  const { explode, flag, reveal, flags, board } = useBoardContext();
   const { startGame, setGameLost, setGameWon, isGameOver, gameState } =
     useScoreboardContext();
 
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
-  const isFlagged = cell.type === CellType.Flagged;
+  const isFlagged = flags.includes(row * board[0].length + column);
   const isMine = cell.count === -1;
   // On a loss, reveal every mine the player hadn't already flagged so they can
   // see where the bombs were.
@@ -40,19 +40,17 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
     }
   }
 
-  function handleOnClick(
-    e: MouseEvent<HTMLButtonElement>,
-    cell: CellData
-  ): void {
-    if (isFlagged || isGameOver) {
+  function handleOnClick(): void {
+    if (isFlagged || isRevealed || isGameOver) {
       return;
     }
 
     if (cell.count >= 0) {
       const allRevealed = reveal(row, column);
 
-      //TODO: this seems excessive
-      startGame();
+      if (gameState === GameState.Inactive) {
+        startGame();
+      }
 
       if (allRevealed) {
         setGameWon();
@@ -72,7 +70,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
 
   return (
     <button
-      onClick={(e) => handleOnClick(e, cell)}
+      onClick={handleOnClick}
       onContextMenu={handleContextMenuClick}
       className={`cell ${isRevealedClassName} ${isExplodedClassName} ${isRevealedMineClassName} ${isFlaggedClassName}`}
     >

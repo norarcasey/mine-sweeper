@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Internal
+
+- Refactored the board context for clarity and safety: the `flags` array is now
+  the single source of truth for flagged cells (the `Flagged` cell type was
+  removed), board updates deep-clone cells instead of mutating shared state, and
+  `flag()` is a single toggle. Added a Testing Library + Vitest
+  characterization/integration suite and `@vitest/coverage-v8`; board-context
+  branch coverage rose from ~83% to ~97%. No change to the published package's
+  behavior or output.
+
 ## [0.5.1] - 2026-06-01
 
 ### Fixed

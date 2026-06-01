@@ -4,7 +4,6 @@ export enum CellType {
   Empty,
   Hidden,
   Revealed,
-  Flagged,
 }
 
 export interface CellData {

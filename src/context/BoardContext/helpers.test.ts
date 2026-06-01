@@ -240,9 +240,9 @@ describe("isRevealWin", () => {
     expect(isRevealWin(board)).toBe(true);
   });
 
-  it("wins regardless of how bombs are typed (flagged or not)", () => {
+  it("wins regardless of how bombs are typed (exploded or not)", () => {
     const board = [
-      row([-1, CellType.Flagged], [1, CellType.Revealed]),
+      row([-1, CellType.Exploded], [1, CellType.Revealed]),
       row([-1, CellType.Bomb], [2, CellType.Revealed]),
     ];
     expect(isRevealWin(board)).toBe(true);
@@ -262,14 +262,6 @@ describe("isRevealWin", () => {
     const board = [
       row([-1, CellType.Bomb], [1, CellType.Revealed]),
       row([0, CellType.Empty], [1, CellType.Revealed]),
-    ];
-    expect(isRevealWin(board)).toBe(false);
-  });
-
-  it("does not win when a non-bomb cell is only flagged", () => {
-    const board = [
-      row([-1, CellType.Bomb], [1, CellType.Flagged]),
-      row([1, CellType.Revealed], [1, CellType.Revealed]),
     ];
     expect(isRevealWin(board)).toBe(false);
   });
