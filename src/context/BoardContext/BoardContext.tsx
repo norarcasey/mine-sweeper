@@ -13,6 +13,7 @@ import { Difficulty, CellData, CellType } from "./types";
 const BoardContext = createContext<{
   board: CellData[][];
   mines: number[];
+  mineCount: number;
   flags: number[];
   reveal: (row: number, column: number) => boolean;
   reset: () => void;
@@ -133,6 +134,8 @@ export function BoardProvider({
         board,
         reveal,
         mines,
+        // The difficulty's enum value is the total number of mines.
+        mineCount: difficulty,
         flags,
         reset: () => {
           setBoard(getEmptyBoard(difficulty));

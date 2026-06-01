@@ -13,9 +13,6 @@ interface UseScoreBoardContext {
   setGameLost: () => void;
   setGameWon: () => void;
   resetGameState: () => void;
-  incrementScore: () => void;
-  decrementScore: () => void;
-  score: string;
   isGameOver: boolean;
 }
 
@@ -27,7 +24,6 @@ export function ScoreboardProvider({
   children: React.ReactNode;
 }): React.ReactElement {
   const [gameState, setGameState] = useState(GameState.Inactive);
-  const [flagCount, setFlagCount] = useState(0);
 
   function setGameLost() {
     setGameState(GameState.Lost);
@@ -35,15 +31,6 @@ export function ScoreboardProvider({
 
   function resetGameState() {
     setGameState(GameState.Inactive);
-    setFlagCount(0);
-  }
-
-  function incrementScore(): void {
-    setFlagCount(flagCount + 1);
-  }
-
-  function decrementScore(): void {
-    setFlagCount(flagCount - 1);
   }
 
   function startGame(): void {
@@ -65,9 +52,6 @@ export function ScoreboardProvider({
         setGameLost,
         setGameWon,
         resetGameState,
-        incrementScore,
-        decrementScore,
-        score: flagCount.toString().padStart(3, "0"),
         isGameOver,
       }}
     >

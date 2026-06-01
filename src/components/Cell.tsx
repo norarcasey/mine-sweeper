@@ -13,14 +13,8 @@ interface CellProps {
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   const { explode, flag, reveal } = useBoardContext();
-  const {
-    startGame,
-    setGameLost,
-    setGameWon,
-    incrementScore,
-    decrementScore,
-    isGameOver,
-  } = useScoreboardContext();
+  const { startGame, setGameLost, setGameWon, isGameOver } =
+    useScoreboardContext();
 
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
@@ -33,14 +27,7 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
       return;
     }
 
-    let allMinesFlagged = false;
-    if (cell.type !== CellType.Flagged) {
-      allMinesFlagged = flag(row, column);
-      incrementScore();
-    } else {
-      allMinesFlagged = flag(row, column);
-      decrementScore();
-    }
+    const allMinesFlagged = flag(row, column);
 
     if (allMinesFlagged) {
       // TODO: Reveal the rest of the unrevealed.
