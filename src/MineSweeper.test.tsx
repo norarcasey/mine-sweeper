@@ -281,7 +281,7 @@ describe("MineSweeper — accessibility", () => {
   it("labels the board region and the reset button", () => {
     const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
     expect(
-      container.querySelector('[role="group"][aria-label="Minesweeper board"]')
+      container.querySelector('[role="grid"][aria-label="Minesweeper board"]')
     ).not.toBeNull();
     expect(
       container.querySelector(".reset-button")?.getAttribute("aria-label")
@@ -310,5 +310,70 @@ describe("MineSweeper — accessibility", () => {
     const won = render(<MineSweeper difficulty={Difficulty.Beginner} />);
     fireEvent.click(cells(won.container)[0]);
     expect(status(won.container)).toBe("You won!");
+  });
+});
+
+// --- keyboard grid navigation ------------------------------------------------
+
+describe("MineSweeper — keyboard grid navigation", () => {
+  it("keeps only the focused cell in the tab order (roving tabindex)", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    const cs = cells(container);
+    expect(cs[0].tabIndex).toBe(0);
+    expect(cs[1].tabIndex).toBe(-1);
+    expect(cs[80].tabIndex).toBe(-1);
+  });
+
+  it("moves focus with the arrow keys and rolls the tab order", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    const cs = cells(container);
+
+    fireEvent.keyDown(cs[0], { key: "ArrowRight" });
+    expect(document.activeElement).toBe(cs[1]);
+    expect(cs[1].tabIndex).toBe(0);
+    expect(cs[0].tabIndex).toBe(-1);
+
+    fireEvent.keyDown(cs[1], { key: "ArrowDown" });
+    expect(document.activeElement).toBe(cs[1 + 9]); // down a row (9 columns)
+
+    fireEvent.keyDown(cs[10], { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(cs[9]);
+
+    fireEvent.keyDown(cs[9], { key: "ArrowUp" });
+    expect(document.activeElement).toBe(cs[0]);
+  });
+
+  it("clamps at the board edges", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    const cs = cells(container);
+    fireEvent.keyDown(cs[0], { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(cs[0]);
+    fireEvent.keyDown(cs[0], { key: "ArrowUp" });
+    expect(document.activeElement).toBe(cs[0]);
+  });
+
+  it("jumps to row ends with Home/End and grid corners with Ctrl", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    const cs = cells(container);
+
+    fireEvent.keyDown(cs[0], { key: "End" });
+    expect(document.activeElement).toBe(cs[8]); // end of row 0
+
+    fireEvent.keyDown(cs[8], { key: "Home" });
+    expect(document.activeElement).toBe(cs[0]); // start of row 0
+
+    fireEvent.keyDown(cs[0], { key: "End", ctrlKey: true });
+    expect(document.activeElement).toBe(cs[80]); // last cell
+
+    fireEvent.keyDown(cs[80], { key: "Home", ctrlKey: true });
+    expect(document.activeElement).toBe(cs[0]); // first cell
+  });
+
+  it("still flags the focused cell with F after navigating", () => {
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+    const cs = cells(container);
+    fireEvent.keyDown(cs[0], { key: "ArrowRight" }); // focus cs[1]
+    fireEvent.keyDown(cs[1], { key: "f" });
+    expect(cs[1].getAttribute("aria-label")).toContain("flagged");
   });
 });

@@ -88,6 +88,14 @@ code {
   align-items: center;
 }
 
+/* Keyboard focus indicator for arrow-key grid navigation. */
+.cell:focus-visible {
+  outline: 3px solid #1565c0;
+  outline-offset: -3px;
+  position: relative;
+  z-index: 1;
+}
+
 .flagged {
   color: black;
 }
