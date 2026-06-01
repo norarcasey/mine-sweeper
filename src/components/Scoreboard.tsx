@@ -38,10 +38,17 @@ export function Scoreboard(): React.ReactElement {
 
   return (
     <div className="scoreboard">
-      <div className="mine-count">{formatCounter(minesRemaining)}</div>
+      <div className="mine-count">
+        <span className="visually-hidden">
+          Mines remaining: {minesRemaining}
+        </span>
+        <span aria-hidden="true">{formatCounter(minesRemaining)}</span>
+      </div>
       <div className="reset-container">
         <button
+          type="button"
           className="reset-button"
+          aria-label="New game"
           onClick={() => {
             reset();
             resetGameState();
@@ -56,6 +63,9 @@ export function Scoreboard(): React.ReactElement {
         </button>
       </div>
       <Timer timer={timer} />
+      <div className="visually-hidden" role="status">
+        {isGameWon ? "You won!" : isGameLost ? "You lost!" : ""}
+      </div>
     </div>
   );
 }

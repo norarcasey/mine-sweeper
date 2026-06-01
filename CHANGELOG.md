@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Accessibility.** Every cell now has a descriptive `aria-label` (its position
+  and state), and flagging has a keyboard equivalent — the `F` key — in addition
+  to right-click (reveal was already keyboard-accessible via Enter/Space). The
+  board region and the reset button are labelled, the mine counter and timer
+  expose screen-reader text, and wins and losses are announced through a live
+  region.
+
 ### Internal
 
 - Refactored the board context for clarity and safety: the `flags` array is now
