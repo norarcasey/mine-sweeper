@@ -16,7 +16,10 @@ function MineSweeper({
 
   return (
     <div className="game">
-      <BoardProvider difficulty={difficulty}>
+      {/* key on difficulty remounts the providers with a fresh board when the
+          difficulty changes, keeping board size, mine count, and game state in
+          sync. */}
+      <BoardProvider key={difficulty} difficulty={difficulty}>
         <ScoreboardProvider>
           <Scoreboard />
           <GameBoard />

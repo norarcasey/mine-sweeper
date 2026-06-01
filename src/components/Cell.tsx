@@ -1,7 +1,7 @@
 import React, { MouseEvent } from "react";
 
 import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
-import { useScoreboardContext } from "../context/ScoreboardContext";
+import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBomb, faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,12 +13,17 @@ interface CellProps {
 
 export function Cell({ cell, row, column }: CellProps): React.ReactElement {
   const { explode, flag, reveal } = useBoardContext();
-  const { startGame, setGameLost, setGameWon, isGameOver } =
+  const { startGame, setGameLost, setGameWon, isGameOver, gameState } =
     useScoreboardContext();
 
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
   const isFlagged = cell.type === CellType.Flagged;
+  const isMine = cell.count === -1;
+  // On a loss, reveal every mine the player hadn't already flagged so they can
+  // see where the bombs were.
+  const isRevealedMine =
+    gameState === GameState.Lost && isMine && !isFlagged && !isExploded;
 
   function handleContextMenuClick(e: MouseEvent<HTMLButtonElement>): void {
     e.preventDefault();
@@ -62,15 +67,16 @@ export function Cell({ cell, row, column }: CellProps): React.ReactElement {
 
   const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : "";
   const isExplodedClassName = isExploded ? `revealed exploded` : "";
+  const isRevealedMineClassName = isRevealedMine ? "revealed mine" : "";
   const isFlaggedClassName = isFlagged ? "flagged" : "";
 
   return (
     <button
       onClick={(e) => handleOnClick(e, cell)}
       onContextMenu={handleContextMenuClick}
-      className={`cell ${isRevealedClassName} ${isExplodedClassName} ${isFlaggedClassName}`}
+      className={`cell ${isRevealedClassName} ${isExplodedClassName} ${isRevealedMineClassName} ${isFlaggedClassName}`}
     >
-      {isExploded && <FontAwesomeIcon icon={faBomb} />}
+      {(isExploded || isRevealedMine) && <FontAwesomeIcon icon={faBomb} />}
       {isFlagged && <FontAwesomeIcon icon={faFlagCheckered} />}
       {isRevealed && cell.count > 0 ? cell.count : ""}
     </button>

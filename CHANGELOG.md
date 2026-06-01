@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Losing now reveals every mine** (except ones you had already flagged), so
+  you can see where the bombs were. Previously only the clicked mine was shown.
+- **Changing the `difficulty` prop resets the game to a correctly-sized board.**
+  Previously the board kept its original dimensions while the mine count and
+  newly placed mines used the new difficulty, leaving them out of sync.
+
 ### Internal
 
 - Migrated off the deprecated Create React App toolchain. Tests now run on
