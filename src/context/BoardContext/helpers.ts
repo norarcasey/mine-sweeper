@@ -73,7 +73,7 @@ export function getInitialBoard(
   const mineIds: number[] = [];
 
   while (mineIds.length < difficulty) {
-    let id = Math.floor(BOARD_SIZE[0] * BOARD_SIZE[1] * Math.random());
+    const id = Math.floor(BOARD_SIZE[0] * BOARD_SIZE[1] * Math.random());
 
     if (!safe.has(id) && !mineIds.includes(id)) {
       mineIds.push(id);
