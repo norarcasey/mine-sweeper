@@ -92,13 +92,14 @@ export function BoardProvider({
     const boardComplete = isRevealWin(boardClone);
 
     if (boardComplete) {
-      // put flags on all mines
+      // Flag every mine and record it so the mines-remaining counter reads 0.
       const rowLength = boardClone[0].length;
       for (const mineId of activeMines) {
         const col = mineId % boardClone[0].length;
         const row = Math.floor(mineId / rowLength);
         boardClone[row][col].type = CellType.Flagged;
       }
+      setFlags([...activeMines]);
     }
 
     setBoard(boardClone);

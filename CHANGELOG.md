@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   counted flags up from `000`; it now starts at the mine total and decrements
   as you flag, going negative when over-flagging (classic Minesweeper). Flag
   tracking is derived from the board's flag set rather than a separate
-  hand-maintained counter, removing a stale-closure update bug.
+  hand-maintained counter, removing a stale-closure update bug. Winning by
+  revealing the last safe cell now also flags the mines in the counter, so it
+  reads `000` on every win.
 - **The timer no longer re-renders every second while idle.** The clock now
   ticks only while the game is active and freezes on win or loss.
 
