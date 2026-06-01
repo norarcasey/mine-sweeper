@@ -21,23 +21,34 @@ const BoardContext = createContext<{
   flag: (row: number, column: number) => boolean;
 } | null>(null);
 
-function revealAdjacent(row: number, column: number, board: CellData[][]) {
-  const adjCells = getAdjacentCoordinates(row, column);
+// Deep clone so updates never mutate the cell objects held by current state.
+function cloneBoard(board: CellData[][]): CellData[][] {
+  return board.map((row) => row.map((cell) => ({ ...cell })));
+}
 
-  adjCells.forEach(([adjRow, adjCol]) => {
+// Flood-fill from an empty cell, revealing neighbours and skipping flagged ones.
+function revealAdjacent(
+  row: number,
+  column: number,
+  board: CellData[][],
+  flagged: Set<number>
+) {
+  const cols = board[0].length;
+
+  for (const [adjRow, adjCol] of getAdjacentCoordinates(row, column)) {
     const adjCell = board[adjRow]?.[adjCol];
 
     if (
       adjCell &&
       adjCell.type !== CellType.Revealed &&
-      adjCell.type !== CellType.Flagged
+      !flagged.has(adjRow * cols + adjCol)
     ) {
       adjCell.type = CellType.Revealed;
       if (adjCell.count === 0) {
-        revealAdjacent(adjRow, adjCol, board);
+        revealAdjacent(adjRow, adjCol, board, flagged);
       }
     }
-  });
+  }
 }
 
 export function BoardProvider({
@@ -48,8 +59,8 @@ export function BoardProvider({
   difficulty: Difficulty;
 }) {
   // The board starts empty (no mines); mines are placed on the first reveal so
-  // the opening click is always safe. Lazy initialisers avoid rebuilding the
-  // board on every render.
+  // the opening click is always safe. `flags` is the single source of truth for
+  // which cells are flagged — flagging never changes a cell's type.
   const [mines, setMines] = useState<number[]>([]);
   const [board, setBoard] = useState<CellData[][]>(() =>
     getEmptyBoard(difficulty)
@@ -62,71 +73,32 @@ export function BoardProvider({
     let activeMines = mines;
 
     if (!started) {
-      // First reveal: regenerate the board with the clicked cell and its
-      // neighbours guaranteed mine-free, so the opener never loses and always
-      // opens a zero-region.
-      const cols = board[0].length;
-      const safeIds = getSafeCellIds(row, column, board.length, cols);
+      // First reveal: place mines, keeping the clicked cell and its neighbours
+      // mine-free so the opener never loses and always opens a zero-region.
+      const safeIds = getSafeCellIds(row, column, board.length, board[0].length);
       const generated = getInitialBoard(difficulty, safeIds);
       activeBoard = generated.initialBoard;
       activeMines = generated.mineIds;
-
-      // Preserve any flags placed before the first reveal.
-      for (const id of flags) {
-        activeBoard[Math.floor(id / cols)][id % cols].type = CellType.Flagged;
-      }
-
       setMines(activeMines);
       setStarted(true);
     }
 
-    const boardClone: CellData[][] = activeBoard.map((row) => [...row]);
-
-    const cell = boardClone[row][column];
+    const nextBoard = cloneBoard(activeBoard);
+    const cell = nextBoard[row][column];
     cell.type = CellType.Revealed;
 
     if (cell.count === 0) {
-      revealAdjacent(row, column, boardClone);
+      revealAdjacent(row, column, nextBoard, new Set(flags));
     }
 
-    const boardComplete = isRevealWin(boardClone);
-
+    const boardComplete = isRevealWin(nextBoard);
     if (boardComplete) {
-      // Flag every mine and record it so the mines-remaining counter reads 0.
-      const rowLength = boardClone[0].length;
-      for (const mineId of activeMines) {
-        const col = mineId % boardClone[0].length;
-        const row = Math.floor(mineId / rowLength);
-        boardClone[row][col].type = CellType.Flagged;
-      }
+      // Flag every mine so the mines-remaining counter reads 0.
       setFlags([...activeMines]);
     }
 
-    setBoard(boardClone);
+    setBoard(nextBoard);
     return boardComplete;
-  }
-
-  function updateCellType(row: number, column: number, type: CellType): void {
-    const boardClone: CellData[][] = board.map((row) => [...row]);
-    const cell = boardClone[row][column];
-
-    if (cell.type === type) {
-      if (cell.count === -1) {
-        cell.type = CellType.Bomb;
-      }
-
-      if (cell.count === 0) {
-        cell.type = CellType.Empty;
-      }
-
-      if (cell.count > 0) {
-        cell.type = CellType.Hidden;
-      }
-    } else {
-      cell.type = type;
-    }
-
-    setBoard(boardClone);
   }
 
   return (
@@ -144,36 +116,31 @@ export function BoardProvider({
           setFlags([]);
           setStarted(false);
         },
-        explode: (row: number, column: number) =>
-          updateCellType(row, column, CellType.Exploded),
+        explode: (row: number, column: number) => {
+          const nextBoard = cloneBoard(board);
+          nextBoard[row][column].type = CellType.Exploded;
+          setBoard(nextBoard);
+        },
         flag: (row: number, column: number) => {
-          const flagClone = [...flags];
           const id = row * board[0].length + column;
-          if (flagClone.includes(id)) {
-            flagClone.splice(flagClone.indexOf(id), 1);
-          } else {
-            flagClone.push(id);
-            flagClone.sort((a, b) => a - b);
-          }
+          const nextFlags = flags.includes(id)
+            ? flags.filter((flagId) => flagId !== id)
+            : [...flags, id].sort((a, b) => a - b);
+          setFlags(nextFlags);
 
-          setFlags(flagClone);
-          updateCellType(row, column, CellType.Flagged);
-
-          const boardComplete = isFlagWin(mines, flagClone);
-
-          const boardClone = board.map((row) => [...row]);
-
+          const boardComplete = isFlagWin(mines, nextFlags);
           if (boardComplete) {
-            for (let i = 0; i < boardClone.length; i++) {
-              for (let j = 0; j < boardClone[i].length; j++) {
-                if (boardClone[i][j].type === CellType.Hidden) {
-                  boardClone[i][j].type = CellType.Revealed;
+            const nextBoard = cloneBoard(board);
+            for (const cellRow of nextBoard) {
+              for (const cell of cellRow) {
+                if (cell.type === CellType.Hidden) {
+                  cell.type = CellType.Revealed;
                 }
               }
             }
+            setBoard(nextBoard);
           }
 
-          setBoard(boardClone);
           return boardComplete;
         },
       }}
