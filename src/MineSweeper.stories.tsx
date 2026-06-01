@@ -11,9 +11,20 @@ const meta: Meta<typeof MineSweeper> = {
 export default meta;
 type Story = StoryObj<typeof MineSweeper>;
 
-export const App: Story = {
+export const Beginner: Story = {
+  args: {
+    difficulty: Difficulty.Beginner,
+  },
+};
+
+export const Intermediate: Story = {
+  args: {
+    difficulty: Difficulty.Intermediate,
+  },
+};
+
+export const Expert: Story = {
   args: {
     difficulty: Difficulty.Expert,
-    //👇 The args you need here will depend on your component
   },
 };
