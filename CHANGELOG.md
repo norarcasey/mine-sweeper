@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-06-02
+
+### Added
+
+- **Chording.** Right-clicking a revealed number whose surrounding flag count
+  matches its value now clears every remaining un-flagged neighbour in one move,
+  cascading through empty regions like a normal reveal. The same move is
+  available from the keyboard — activating a revealed number with Enter/Space
+  chords it. If a flag is misplaced, the un-flagged mine it left behind is
+  revealed and detonates, matching classic Minesweeper.
+
 ## [0.7.0] - 2026-06-02
 
 ### Changed
@@ -165,6 +176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Earlier releases (0.1.x – 0.3.0) predate this changelog; see the git history
 for details. 0.3.0 added winning game states.
 
+[1.0.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.7.0...v1.0.0
 [0.7.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/norarcasey/mine-sweeper/compare/v0.5.0...v0.5.1
