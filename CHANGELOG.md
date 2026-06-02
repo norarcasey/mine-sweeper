@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-06-02
+
+### Fixed
+
+- **The published package now ships `dist/MineSweeper.css`.** The compiled
+  `dist/MineSweeper.js` imports `./MineSweeper.css`, but the build only ran
+  `tsc` (which doesn't copy stylesheets), so the file was missing from `dist/`
+  and every consumer's build, dev server, and tests failed with
+  `Failed to resolve import "./MineSweeper.css"`. The build now copies the
+  stylesheet into `dist/` so the import resolves. No API or behaviour change.
+
 ## [1.0.0] - 2026-06-02
 
 ### Added
@@ -176,6 +187,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Earlier releases (0.1.x – 0.3.0) predate this changelog; see the git history
 for details. 0.3.0 added winning game states.
 
+[1.0.1]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.7.0...v1.0.0
 [0.7.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.5.1...v0.6.0
