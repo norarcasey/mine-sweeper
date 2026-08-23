@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-08-23
+
+### Internal
+
+- **Releases now publish to npm from CI via npm Trusted Publishing (OIDC).**
+  Publishing is triggered by publishing the GitHub Release for a version tag,
+  so there is no longer an npm access token to rotate, and provenance is
+  attached to the published package automatically. The workflow verifies the
+  release tag matches `package.json` and skips publishing when that version is
+  already on the registry, so re-runs are safe. No change to the published
+  package's contents or runtime behaviour.
+
 ## [1.0.1] - 2026-06-02
 
 ### Fixed
@@ -187,6 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Earlier releases (0.1.x – 0.3.0) predate this changelog; see the git history
 for details. 0.3.0 added winning game states.
 
+[1.0.2]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.7.0...v1.0.0
 [0.7.0]: https://github.com/norarcasey/mine-sweeper/compare/v0.6.0...v0.7.0
