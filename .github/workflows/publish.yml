@@ -1,0 +1,63 @@
+name: Publish to npm
+
+# Publishes @norarcasey/mine-sweeper when a GitHub Release is published.
+#
+# Uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret required. Configure
+# this repo + workflow as a trusted publisher in the package settings on
+# npmjs.com (Settings → Trusted Publishing) before the first CI publish.
+# Provenance is attached automatically.
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # required for OIDC trusted publishing + provenance
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22.x
+          registry-url: https://registry.npmjs.org
+          cache: yarn
+
+      # Trusted publishing requires npm >= 11.5.1, newer than what Node bundles.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Verify release tag matches package version
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME}"
+          if [ "$PKG_VERSION" != "$TAG" ]; then
+            echo "Release tag ($TAG) does not match package.json version ($PKG_VERSION)" >&2
+            exit 1
+          fi
+
+      # Make the workflow idempotent: if this exact version is already on the
+      # registry (e.g. a re-run, or a release cut for a manually-published
+      # version), skip publishing instead of failing on the duplicate.
+      - name: Check if version is already published
+        id: published
+        run: |
+          NAME="$(node -p "require('./package.json').name")"
+          VERSION="$(node -p "require('./package.json').version")"
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already published — skipping publish."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # No NODE_AUTH_TOKEN — auth happens via OIDC. Provenance is automatic.
+      - name: Publish
+        if: steps.published.outputs.exists == 'false'
+        run: npm publish
