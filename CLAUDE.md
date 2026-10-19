@@ -29,7 +29,9 @@ shares code across the two, so the only thing that keeps them the same game is t
 
 **The TypeScript copy is the reference.** It lives in `src/context/BoardContext/`.
 `helpers.ts` holds board building, safe cells and win checks. `BoardContext.tsx` holds reveal,
-flood fill, flagging and chording.
+flood fill, flagging and chording. The Swift copy is `ios/MineSweeperKit`: `Rules.swift`
+matches `helpers.ts`, and `Game.swift` matches `BoardContext.tsx` plus the move guards in
+`Cell.tsx`. Its README maps each name across the two copies.
 
 - **Board sizes.** Beginner 9×9 with 10 mines, Intermediate 16×16 with 40, and Expert 16 rows
   × 30 columns with 99 (`getBoardSize`, `Difficulty`).
@@ -66,10 +68,12 @@ corepack yarn test        # Vitest
 
 ```bash
 corepack yarn lint && corepack yarn typecheck && corepack yarn test && corepack yarn ts-build && STORYBOOK_DISABLE_TELEMETRY=1 corepack yarn build-storybook
+(cd ios/MineSweeperKit && swift test)
 ```
 
-There is no end-to-end suite. Once `ios/` exists, verify also runs its `swift test` and
-`xcodebuild test`.
+There is no end-to-end suite. The Swift rules (`ios/MineSweeperKit`, MINE-2) run locally
+only: CI runs on Ubuntu and has no Swift job yet. Once the app exists (MINE-3), verify also
+runs its `xcodebuild test`.
 
 ## Ship it
 
