@@ -61,19 +61,48 @@ The hold applies to the component only.
 ```bash
 corepack yarn install --frozen-lockfile
 corepack yarn storybook   # develop the component on :6006
-corepack yarn test        # Vitest
+corepack yarn gate        # lint, typecheck, Vitest: the command CI runs
+corepack yarn verify      # before pushing
 ```
 
-**Verify**, the same steps CI runs (`.github/workflows/ci.yml`):
+`yarn gate` is lint, typecheck and Vitest, in CI's order, and CI's `Gate` step runs the
+same command. There is no Prettier here, so there is no `format:check`. `yarn verify` is the
+gate, then the library build, the Storybook build and `swift test` for `ios/MineSweeperKit`.
+CI also runs the two builds. The Swift tests run locally only, because CI runs on Ubuntu and
+has no Swift job yet (MINE-3 adds a macOS one). Once the app exists, verify also runs its
+`xcodebuild test`. There is no end-to-end suite.
 
-```bash
-corepack yarn lint && corepack yarn typecheck && corepack yarn test && corepack yarn ts-build && STORYBOOK_DISABLE_TELEMETRY=1 corepack yarn build-storybook
-(cd ios/MineSweeperKit && swift test)
-```
+## Working style
 
-There is no end-to-end suite. The Swift rules (`ios/MineSweeperKit`, MINE-2) run locally
-only: CI runs on Ubuntu and has no Swift job yet. Once the app exists (MINE-3), verify also
-runs its `xcodebuild test`.
+- **The plan is in Linora**, as app `MINE` (`.linora-app`; the `runway` skill). Take work with
+  `get_next_ticket` → `claim_ticket`, log findings with `log_progress`, and finish with
+  `complete_run` and a summary of what was built, what was found and what the plan got wrong.
+  Work found on the way is filed with `create_tickets`, not done unasked. Never move a ticket
+  to done: Nora does, after review.
+- **Every commit carries a `Runway:` trailer**: the ticket key, or `none`. The global hook
+  checks it against Linora and refuses a commit without one.
+- Commit attribution comes from the harness's own instructions. Never copy a model name
+  from an old commit or a template.
+- `corepack yarn gate` while working, and `corepack yarn verify` before pushing.
+
+## More than one session at once
+
+Each session that changes code works in its own git worktree, never in a tree another
+session is editing, and never in the main checkout. Use `EnterWorktree` named for the ticket
+(`mine-9`), `claude --worktree <name>`, or a subagent's `isolation: "worktree"`. If a
+worktree for the ticket already exists, enter it by path rather than making a second one.
+
+- **They nest under `.claude/worktrees/`, and nothing here walks into them.** Git reads
+  `.gitignore`, and ESLint ignores the directory by name. Vitest only collects tests under
+  the root it runs in. A tool added later that walks `.` needs the same.
+- **A new worktree does not install itself.** This repo has no SessionStart hook, so run
+  `corepack yarn install --frozen-lockfile` after entering one.
+- **A new worktree starts from `origin/main`**, Claude Code's default, not from the local
+  branch. Push `main` before starting one that needs what just merged.
+- **Two Storybooks can run at once.** When 6006 is taken, Storybook asks to use the next
+  free port.
+- **Merging** is Ship it, below. Two sessions finishing two tickets do not conflict: the
+  tickets are in Linora, and a claim there is one transaction.
 
 ## Ship it
 
@@ -87,7 +116,7 @@ The checks still run on the push, and local verify has already run the same step
 protection was left as it is because changing it is an access change.
 
 1. **Merge to main.** `git fetch origin && git rebase origin/main`, then fast-forward.
-2. **Verify.** Run the verify line above on the rebased commit.
+2. **Verify.** `corepack yarn verify` on the rebased commit.
 3. **Push.** `git push origin HEAD:main`.
 4. **Deploy:**
    - **Component, ordinary change:** nothing deploys. Watch CI on the pushed commit to the end

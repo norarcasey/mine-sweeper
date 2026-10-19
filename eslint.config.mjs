@@ -4,7 +4,18 @@ import tseslint from "typescript-eslint";
 import reactHooks from "eslint-plugin-react-hooks";
 
 export default tseslint.config(
-  { ignores: ["dist", "build", "coverage", "storybook-static", "node_modules"] },
+  {
+    ignores: [
+      "dist",
+      "build",
+      "coverage",
+      "storybook-static",
+      "node_modules",
+      // Other sessions' checkouts (see CLAUDE.md, "More than one session at once").
+      ".claude/worktrees",
+      "ios/**/.build",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

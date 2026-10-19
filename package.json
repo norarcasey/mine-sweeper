@@ -34,7 +34,9 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "gate": "yarn lint && yarn typecheck && yarn test",
+    "verify": "yarn gate && yarn ts-build && STORYBOOK_DISABLE_TELEMETRY=1 yarn build-storybook && cd ios/MineSweeperKit && swift test"
   },
   "resolutions": {
     "@babel/runtime": "^7.26.10"
