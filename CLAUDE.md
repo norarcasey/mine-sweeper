@@ -140,8 +140,26 @@ protection was left as it is because changing it is an access change.
         `## Internal`, with no version heading, ending in
         `**Full changelog:** https://github.com/norarcasey/mine-sweeper/compare/vPREV...vX.Y.Z`.
    - **iOS app:** ships through TestFlight and then the App Store. Both publish to Nora's
-     team, so **every upload and every submission needs a Shipit**. MINE-4 writes the exact
-     archive and upload commands here once the first build has gone up. Until then, there
-     is no iOS ship.
+     team, so **every upload and every submission needs a Shipit**. Ship the commit to
+     `main` first (steps 1–3), then, from a clean tree on that commit:
+     1. `ios/testflight.sh upload`. It archives a Release build and exports it with
+        `destination: upload`. The build number is `git rev-list --count HEAD`, so a new
+        commit on `main` gives a new number with no bump commit. The version is
+        `MARKETING_VERSION` in the project. The script refuses a dirty tree or a HEAD not
+        on `origin/main`. `ios/testflight.sh export` does the same without uploading, and
+        leaves the `.ipa` in `ios/build/export/`.
+     2. Wait for App Store Connect to finish processing (TestFlight › iOS builds). Internal
+        testers on the team get it in the TestFlight app, and no review is needed.
+     - **Signing is automatic** (decided in MINE-4). It runs through the Apple ID Xcode
+       is signed in with (Xcode › Settings › Accounts), and `-allowProvisioningUpdates`
+       fetches the profiles and the cloud-managed Apple Distribution certificate. There is
+       no App Store Connect API key, and CI does not upload. The project has one
+       maintainer, macOS minutes cost ten times Linux ones, and a key would be a new
+       secret in GitHub for nothing this laptop command can't do.
+     - **Done by hand, once** (MINE-4, 19 Oct 2026): Nora created the App Store Connect
+       record (bundle id `club.nora.mine-sweeper`, SKU `mine-sweeper`, English (U.S.)) and
+       the internal testing group, and installed TestFlight on her phone. Export
+       compliance is answered in the project (`ITSAppUsesNonExemptEncryption = NO`), so
+       uploads don't stop to ask.
 
 The repo has no project hooks, so no main-checkout fast-forward is needed.
