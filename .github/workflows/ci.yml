@@ -44,3 +44,17 @@ jobs:
         run: yarn build-storybook
         env:
           STORYBOOK_DISABLE_TELEMETRY: "1"
+
+  # The iPhone half: MineSweeperKit's swift test and the app's unit tests,
+  # the same `ios/test.sh gate` as on the laptop. The UI tests run in local
+  # `yarn verify` only: macOS minutes cost ten times Linux ones (MINE-3).
+  ios:
+    name: iOS gate
+    runs-on: macos-26
+    timeout-minutes: 30 # first runs, not yet measured (MINE-3, 19 Oct 2026)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Gate
+        run: ios/test.sh gate

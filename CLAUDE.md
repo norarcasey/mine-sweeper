@@ -13,14 +13,16 @@ Classic Minesweeper, in two halves that share one set of rules.
 1. **`@norarcasey/mine-sweeper`**: an embeddable React + TypeScript component on npm
    (`src/`, Storybook for development, Vitest for tests). This is the original repo, versions
    0.x–1.0.2, released through GitHub Releases.
-2. **An iPhone app** (planned in `ios/`): a **native SwiftUI rewrite**, not a web view around
+2. **An iPhone app** (`ios/`, see `ios/README.md`): a **native SwiftUI rewrite**, not a web view around
    the component. Nora decided this on 19 Oct 2026 (`LIN/LIN-67`). The app exists for two
    reasons: to be a real game on her phone, and to let her try out her new Apple Developer team
    and the App Store review process. The tickets: MINE-2 (rules in Swift), MINE-3 (the
    app), MINE-4 (TestFlight), MINE-5 (App Store review).
 
 The repo is **public**, so signing keys, certificates, App Store Connect API keys and
-provisioning profiles never go into it.
+provisioning profiles never go into it. The team id (`6W9DVVF8CY`) and the bundle id
+(`club.nora.mine-sweeper`) are not secrets and are committed in the Xcode project; both come
+from the "Apple apps" section of Nora's global `CLAUDE.md`.
 
 ## Invariant: the rules live twice, and they are the same rules
 
@@ -67,10 +69,14 @@ corepack yarn verify      # before pushing
 
 `yarn gate` is lint, typecheck and Vitest, in CI's order, and CI's `Gate` step runs the
 same command. There is no Prettier here, so there is no `format:check`. `yarn verify` is the
-gate, then the library build, the Storybook build and `swift test` for `ios/MineSweeperKit`.
-CI also runs the two builds. The Swift tests run locally only, because CI runs on Ubuntu and
-has no Swift job yet (MINE-3 adds a macOS one). Once the app exists, verify also runs its
-`xcodebuild test`. There is no end-to-end suite.
+gate, then the library build, the Storybook build and `ios/test.sh all`.
+
+`ios/test.sh` is the iPhone half's one command. `gate` runs `swift test` for
+`ios/MineSweeperKit`, then the app's unit tests through `xcodebuild test` on the first
+available iPhone simulator. CI's macOS job (`iOS gate`) runs exactly that. `all` adds the UI
+tests, a win and a loss on a seeded board, and only `yarn verify` runs it. The UI tests are this
+repo's slow suite, and macOS runner minutes cost ten times Linux ones, so they stay out of CI
+(the `ci` skill, `LIN/LIN-20`). There is no browser end-to-end suite.
 
 ## Working style
 

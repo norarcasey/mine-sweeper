@@ -86,7 +86,8 @@ once against `Math.random`.
 |                                                         | does not win while an empty (count 0) cell is unrevealed            |
 
 Swift only, and not a rule case: `[Swift only] the same seed builds the same board` pins the
-injectable random source.
+injectable random source. That source, `SeededGenerator` (SplitMix64), is public, because the
+app's UI tests use it too: they launch the app with a seed and replay the same board.
 
 ### `MineSweeper.test.tsx` → `GameTests.swift`
 
