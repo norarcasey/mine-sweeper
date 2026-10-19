@@ -51,7 +51,7 @@ jobs:
   ios:
     name: iOS gate
     runs-on: macos-26
-    timeout-minutes: 30 # first runs, not yet measured (MINE-3, 19 Oct 2026)
+    timeout-minutes: 20 # the gate ran 7 min on macos-26 (measured 19 Oct 2026, MINE-3)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
