@@ -58,14 +58,20 @@ The hold applies to the component only.
 
 ## Develop
 
-`yarn` is not on the PATH here. Run it through corepack:
+`yarn` is not on the PATH here, and `node` on the PATH is Homebrew's v26, which no longer
+ships corepack. `.node-version` pins Node 22, the lower entry in CI's matrix, and fnm has it.
+Run yarn through corepack, under that Node:
 
 ```bash
-corepack yarn install --frozen-lockfile
-corepack yarn storybook   # develop the component on :6006
-corepack yarn gate        # lint, typecheck, Vitest: the command CI runs
-corepack yarn verify      # before pushing
+fnm exec -- corepack yarn install --frozen-lockfile
+fnm exec -- corepack yarn storybook   # develop the component on :6006
+fnm exec -- corepack yarn gate        # lint, typecheck, Vitest: the command CI runs
+fnm exec -- corepack yarn verify      # before pushing
 ```
+
+`fnm exec` reads `.node-version` itself, so these run as written from any shell. Nora's
+`~/.zshrc` also switches to Node 22 when a terminal `cd`s here, so bare `corepack yarn …` works
+there. An agent's shell does not run that hook and still has Node 26 (MINE-8).
 
 `yarn gate` is lint, typecheck and Vitest, in CI's order, and CI's `Gate` step runs the
 same command. There is no Prettier here, so there is no `format:check`. `yarn verify` is the
@@ -89,7 +95,8 @@ repo's slow suite, and macOS runner minutes cost ten times Linux ones, so they s
   checks it against Linora and refuses a commit without one.
 - Commit attribution comes from the harness's own instructions. Never copy a model name
   from an old commit or a template.
-- `corepack yarn gate` while working, and `corepack yarn verify` before pushing.
+- `fnm exec -- corepack yarn gate` while working, and `fnm exec -- corepack yarn verify` before
+  pushing.
 
 ## More than one session at once
 
@@ -102,7 +109,7 @@ worktree for the ticket already exists, enter it by path rather than making a se
   `.gitignore`, and ESLint ignores the directory by name. Vitest only collects tests under
   the root it runs in. A tool added later that walks `.` needs the same.
 - **A new worktree does not install itself.** This repo has no SessionStart hook, so run
-  `corepack yarn install --frozen-lockfile` after entering one.
+  `fnm exec -- corepack yarn install --frozen-lockfile` after entering one.
 - **A new worktree starts from `origin/main`**, Claude Code's default, not from the local
   branch. Push `main` before starting one that needs what just merged.
 - **Two Storybooks can run at once.** When 6006 is taken, Storybook asks to use the next
@@ -122,7 +129,7 @@ The checks still run on the push, and local verify has already run the same step
 protection was left as it is because changing it is an access change.
 
 1. **Merge to main.** `git fetch origin && git rebase origin/main`, then fast-forward.
-2. **Verify.** `corepack yarn verify` on the rebased commit.
+2. **Verify.** `fnm exec -- corepack yarn verify` on the rebased commit.
 3. **Push.** `git push origin HEAD:main`.
 4. **Deploy:**
    - **Component, ordinary change:** nothing deploys. Watch CI on the pushed commit to the end
