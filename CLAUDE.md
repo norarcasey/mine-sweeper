@@ -156,17 +156,15 @@ protection was left as it is because changing it is an access change.
        no App Store Connect API key, and CI does not upload. The project has one
        maintainer, macOS minutes cost ten times Linux ones, and a key would be a new
        secret in GitHub for nothing this laptop command can't do.
-     - **By hand, once, before the first upload** (MINE-4): Nora registers the explicit
-       App ID in the developer portal (Certificates, Identifiers & Profiles › Identifiers ›
-       + › App IDs › App, Explicit, `club.nora.mine-sweeper`). Development builds never
-       needed it: they sign with Xcode's wildcard profile (`6W9DVVF8CY.*`), so nothing
-       had registered it. Then she creates the App Store
-       Connect app record (Apps › + › New App: iOS, bundle id `club.nora.mine-sweeper`,
-       a SKU, English (U.S.), and a name, which is public and must be unique on the
-       store), adds herself to an internal testing group, and installs TestFlight on her
-       phone. Without the record, the export fails with "Error Downloading App
-       Information": App Store Connect returns no app for the bundle id. Export
-       compliance is answered in the project (`ITSAppUsesNonExemptEncryption = NO`), so
-       uploads don't stop to ask.
+     - **Done by hand, once** (MINE-4, 19 Oct 2026). Nora registered the explicit App ID
+       in the developer portal (Certificates, Identifiers & Profiles › Identifiers › + ›
+       App IDs › App, Explicit, `club.nora.mine-sweeper`). Development builds never needed
+       it: they sign with Xcode's wildcard profile (`6W9DVVF8CY.*`), so nothing had
+       registered it. Then she created the App Store Connect app record, **Nora's Mine
+       Sweeper** (iOS, English (U.S.)), made an internal testing group with herself in it,
+       and installed TestFlight on her phone. The first upload was 1.0 (96). Without the
+       record, the export fails with "Error Downloading App Information", because App
+       Store Connect returns no app for the bundle id. Export compliance is answered in
+       the project (`ITSAppUsesNonExemptEncryption = NO`), so uploads don't stop to ask.
 
 The repo has no project hooks, so no main-checkout fast-forward is needed.
