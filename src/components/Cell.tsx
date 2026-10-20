@@ -36,10 +36,10 @@ export function Cell({
       return;
     }
 
+    // A flag win also reveals the rest of the board (BoardContext's `flag`).
     const allMinesFlagged = flag(row, column);
 
     if (allMinesFlagged) {
-      // TODO: Reveal the rest of the unrevealed.
       setGameWon();
     }
   }

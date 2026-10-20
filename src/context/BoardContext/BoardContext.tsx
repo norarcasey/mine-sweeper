@@ -200,10 +200,12 @@ export function BoardProvider({
 
           const boardComplete = isFlagWin(mines, nextFlags);
           if (boardComplete) {
+            // Reveal every non-mine cell: numbered (`Hidden`) and count-0
+            // (`Empty`) alike. The mines are all flagged and stay as they are.
             const nextBoard = cloneBoard(board);
             for (const cellRow of nextBoard) {
               for (const cell of cellRow) {
-                if (cell.type === CellType.Hidden) {
+                if (cell.count !== -1) {
                   cell.type = CellType.Revealed;
                 }
               }

@@ -101,6 +101,7 @@ app's UI tests use it too: they launch the app with a seed and replay the same b
 | MineSweeper — outcomes            | loses and reveals every mine when a bomb is clicked                                       |
 |                                   | wins when every safe cell is revealed                                                     |
 |                                   | wins when exactly the mines are flagged                                                   |
+|                                   | reveals every safe cell, empty ones included, on a flag win                               |
 | MineSweeper — chording            | reveals the un-flagged neighbours of a correctly flagged number                           |
 |                                   | detonates when chording a number whose flag is misplaced                                  |
 |                                   | does nothing when the surrounding flag count does not match                               |

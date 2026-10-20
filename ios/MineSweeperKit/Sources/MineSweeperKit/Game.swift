@@ -128,7 +128,7 @@ public struct Game: Sendable, Hashable {
     }
 
     /// Toggle a flag on a cell that is not revealed. Flagging exactly the mines
-    /// wins and reveals the hidden numbered cells.
+    /// wins and reveals every non-mine cell.
     public mutating func toggleFlag(row: Int, column: Int) {
         guard !isGameOver, let cell = board.cell(at: row, column), cell.type != .revealed else {
             return
@@ -143,10 +143,10 @@ public struct Game: Sendable, Hashable {
         }
 
         if Rules.isFlagWin(mineIDs: mineIDs, flaggedIDs: flaggedIDs) {
-            // Only `.hidden` cells turn over, as in the TS copy: unrevealed
-            // count-0 cells keep type `.empty`.
+            // Reveal every non-mine cell: numbered (`.hidden`) and count-0
+            // (`.empty`) alike. The mines are all flagged and stay as they are.
             for r in board.indices {
-                for c in board[r].indices where board[r][c].type == .hidden {
+                for c in board[r].indices where !board[r][c].isMine {
                     board[r][c].type = .revealed
                 }
             }

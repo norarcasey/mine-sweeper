@@ -157,6 +157,27 @@ describe("MineSweeper — outcomes", () => {
     fireEvent.contextMenu(cells(container)[80]); // flag (8,8) -> win
     expect(face(container)).toBe("face-grin-hearts");
   });
+
+  it("reveals every safe cell, empty ones included, on a flag win", () => {
+    vi.mocked(getInitialBoard).mockReturnValueOnce(
+      buildBoard(9, 9, [
+        [0, 1],
+        [8, 8],
+      ])
+    );
+    const { container } = render(<MineSweeper difficulty={Difficulty.Beginner} />);
+
+    fireEvent.click(cells(container)[0]); // (0,0) is a number -> reveals only itself
+    expect(revealed(container)).toHaveLength(1);
+    fireEvent.contextMenu(cells(container)[1]); // flag (0,1)
+    fireEvent.contextMenu(cells(container)[80]); // flag (8,8) -> win
+
+    expect(face(container)).toBe("face-grin-hearts");
+    // Every cell but the two flagged mines, the count-0 ones too.
+    expect(revealed(container)).toHaveLength(79);
+    expect(cells(container)[40].classList.contains("adj-0")).toBe(true); // (4,4)
+    expect(flags(container)).toHaveLength(2);
+  });
 });
 
 // --- chording ----------------------------------------------------------------

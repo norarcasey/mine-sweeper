@@ -148,6 +148,22 @@ struct OutcomeTests {
         game.toggleFlag(row: 8, column: 8) // -> win
         #expect(game.state == .won)
     }
+
+    @Test("reveals every safe cell, empty ones included, on a flag win")
+    func flagWinRevealsAll() {
+        var game = twoMineBoard()
+
+        game.reveal(row: 0, column: 0) // (0,0) is a number -> reveals only itself
+        #expect(game.revealedCount == 1)
+        game.toggleFlag(row: 0, column: 1)
+        game.toggleFlag(row: 8, column: 8) // -> win
+
+        #expect(game.state == .won)
+        // Every cell but the two flagged mines, the count-0 ones too.
+        #expect(game.revealedCount == 79)
+        #expect(game.appearance(row: 4, column: 4) == .revealed(count: 0))
+        #expect(game.flaggedIDs.count == 2)
+    }
 }
 
 @Suite("MineSweeper.test.tsx › MineSweeper — chording")
