@@ -156,7 +156,11 @@ protection was left as it is because changing it is an access change.
        no App Store Connect API key, and CI does not upload. The project has one
        maintainer, macOS minutes cost ten times Linux ones, and a key would be a new
        secret in GitHub for nothing this laptop command can't do.
-     - **By hand, once, before the first upload** (MINE-4): Nora creates the App Store
+     - **By hand, once, before the first upload** (MINE-4): Nora registers the explicit
+       App ID in the developer portal (Certificates, Identifiers & Profiles › Identifiers ›
+       + › App IDs › App, Explicit, `club.nora.mine-sweeper`). Development builds never
+       needed it: they sign with Xcode's wildcard profile (`6W9DVVF8CY.*`), so nothing
+       had registered it. Then she creates the App Store
        Connect app record (Apps › + › New App: iOS, bundle id `club.nora.mine-sweeper`,
        a SKU, English (U.S.), and a name, which is public and must be unique on the
        store), adds herself to an internal testing group, and installs TestFlight on her
