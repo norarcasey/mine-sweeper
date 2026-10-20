@@ -156,9 +156,12 @@ protection was left as it is because changing it is an access change.
        no App Store Connect API key, and CI does not upload. The project has one
        maintainer, macOS minutes cost ten times Linux ones, and a key would be a new
        secret in GitHub for nothing this laptop command can't do.
-     - **Done by hand, once** (MINE-4, 19 Oct 2026): Nora created the App Store Connect
-       record (bundle id `club.nora.mine-sweeper`, SKU `mine-sweeper`, English (U.S.)) and
-       the internal testing group, and installed TestFlight on her phone. Export
+     - **By hand, once, before the first upload** (MINE-4): Nora creates the App Store
+       Connect app record (Apps › + › New App: iOS, bundle id `club.nora.mine-sweeper`,
+       a SKU, English (U.S.), and a name, which is public and must be unique on the
+       store), adds herself to an internal testing group, and installs TestFlight on her
+       phone. Without the record, the export fails with "Error Downloading App
+       Information": App Store Connect returns no app for the bundle id. Export
        compliance is answered in the project (`ITSAppUsesNonExemptEncryption = NO`), so
        uploads don't stop to ask.
 
