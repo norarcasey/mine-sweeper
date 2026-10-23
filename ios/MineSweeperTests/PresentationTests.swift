@@ -158,6 +158,57 @@ struct GameModelTests {
         #expect(ended >= started)
     }
 
+    @Test func pausingHoldsTheClockAndResumingLeavesThePauseOffIt() throws {
+        let model = GameModel(difficulty: .beginner, seed: 7)
+        model.reveal(row: 4, column: 4)
+        let started = try #require(model.startedAt)
+
+        model.pause(at: started.addingTimeInterval(10))
+        #expect(model.isPaused)
+        #expect(model.elapsedSeconds(at: started.addingTimeInterval(500)) == 10)
+
+        // Paused for 60 seconds, so 75 seconds in the clock shows 15.
+        model.resume(at: started.addingTimeInterval(70))
+        #expect(!model.isPaused)
+        #expect(model.elapsedSeconds(at: started.addingTimeInterval(75)) == 15)
+
+        // A second pause adds to the first.
+        model.pause(at: started.addingTimeInterval(80))
+        model.resume(at: started.addingTimeInterval(100))
+        #expect(model.elapsedSeconds(at: started.addingTimeInterval(105)) == 25)
+    }
+
+    @Test func pausingAgainKeepsTheFirstPause() throws {
+        let model = GameModel(difficulty: .beginner, seed: 7)
+        model.reveal(row: 4, column: 4)
+        let started = try #require(model.startedAt)
+        model.pause(at: started.addingTimeInterval(10))
+        model.pause(at: started.addingTimeInterval(40))
+        #expect(model.pausedAt == started.addingTimeInterval(10))
+    }
+
+    @Test func onlyAGameUnderWayPauses() throws {
+        let model = GameModel(difficulty: .beginner, seed: 7)
+        model.pause()
+        #expect(!model.isPaused)
+
+        model.reveal(row: 4, column: 4)
+        let mine = try #require(model.game.mineIDs.first)
+        model.reveal(row: mine / 9, column: mine % 9)
+        #expect(model.game.state == .lost)
+        model.pause()
+        #expect(!model.isPaused)
+    }
+
+    @Test func aNewGameClearsAPause() throws {
+        let model = GameModel(difficulty: .beginner, seed: 7)
+        model.reveal(row: 4, column: 4)
+        model.pause()
+        model.newGame()
+        #expect(!model.isPaused)
+        #expect(model.elapsedSeconds(at: .now) == 0)
+    }
+
     @Test func longPressFlagsAHiddenCellAndCountsTheToggle() {
         let model = GameModel(difficulty: .beginner)
         model.longPress(row: 0, column: 0)

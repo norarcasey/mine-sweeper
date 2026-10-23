@@ -38,6 +38,9 @@ destination in Xcode and press Run.
   game. It is presentation only, so the component has no equivalent.
 - The **face** starts a new game. The **picker** changes difficulty and starts a new game, and
   the choice is kept between launches.
+- **Pausing:** leaving the app mid-game (another app, the app switcher, Control Center, the
+  lock button) holds the clock and covers the board with a **Paused** screen, which stays
+  until it is tapped. Only a game under way pauses. The component has no equivalent.
 - **Haptics:** a tap on each flag, an error on a loss, a success on a win.
 - **VoiceOver:** each cell reads as the component's `aria-label` does ("Row 3, column 5,
   2 adjacent mines"), activates to reveal, and has a Flag/Unflag action. The game announces

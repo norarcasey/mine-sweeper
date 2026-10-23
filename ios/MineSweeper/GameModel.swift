@@ -12,6 +12,10 @@ final class GameModel {
     /// Set by the first reveal, and frozen with `endedAt` when the game ends.
     private(set) var startedAt: Date?
     private(set) var endedAt: Date?
+    /// Set while the game is paused, which holds the clock where it was.
+    private(set) var pausedAt: Date?
+    /// Time spent paused this game, left off the clock.
+    private var pausedFor: TimeInterval = 0
     /// Counts flags placed and removed, so a haptic fires on each. A win that
     /// flags every mine is not a toggle and does not count.
     private(set) var flagToggles = 0
@@ -39,10 +43,31 @@ final class GameModel {
         }
     }
 
-    /// Whole seconds on the clock at `now`.
+    /// Whole seconds on the clock at `now`, less any time spent paused.
     func elapsedSeconds(at now: Date) -> Int {
         guard let startedAt else { return 0 }
-        return max(0, Int((endedAt ?? now).timeIntervalSince(startedAt)))
+        let stoppedAt = endedAt ?? pausedAt ?? now
+        return max(0, Int(stoppedAt.timeIntervalSince(startedAt) - pausedFor))
+    }
+
+    /// True while the game is paused: the board is covered and the clock held.
+    var isPaused: Bool { pausedAt != nil }
+
+    // MARK: - Pausing
+
+    /// Holds the clock and covers the board, when the app leaves the
+    /// foreground. Only a game under way pauses: before the first reveal and
+    /// after the end there is no clock running and nothing to hide.
+    func pause(at now: Date = .now) {
+        guard game.state == .active, pausedAt == nil else { return }
+        pausedAt = now
+    }
+
+    /// Takes the paused stretch off the clock and uncovers the board.
+    func resume(at now: Date = .now) {
+        guard let pausedAt else { return }
+        pausedFor += max(0, now.timeIntervalSince(pausedAt))
+        self.pausedAt = nil
     }
 
     // MARK: - Moves
@@ -116,5 +141,7 @@ final class GameModel {
     private func clearClock() {
         startedAt = nil
         endedAt = nil
+        pausedAt = nil
+        pausedFor = 0
     }
 }

@@ -117,6 +117,29 @@ final class GameUITests: XCTestCase {
         XCTAssertTrue(window.frame.contains(cell(8, 8).frame), "the whole board shows")
     }
 
+    /// Leaving the app mid-game covers the board and holds the clock until the
+    /// paused screen is tapped.
+    func testLeavingTheAppPausesTheGame() {
+        tap(Self.opener.row, Self.opener.column)
+        let paused = app.descendants(matching: .any)["paused"]
+        XCTAssertFalse(paused.exists)
+
+        XCUIDevice.shared.press(.home)
+        app.activate()
+        XCTAssertTrue(paused.waitForExistence(timeout: 5), "back in the app, the game is paused")
+        XCTAssertFalse(cell(Self.opener.row, Self.opener.column).exists, "the board is hidden while paused")
+
+        // The clock holds while paused.
+        let timer = app.descendants(matching: .any)["timer"]
+        let held = timer.label
+        Thread.sleep(forTimeInterval: 2.5)
+        XCTAssertEqual(timer.label, held)
+
+        paused.tap()
+        XCTAssertTrue(paused.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(cell(Self.opener.row, Self.opener.column).exists)
+    }
+
     func testFlagModeFlagsATappedMine() throws {
         let game = replay()
         tap(Self.opener.row, Self.opener.column)

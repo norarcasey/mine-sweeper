@@ -6,6 +6,7 @@ struct ContentView: View {
     let model: GameModel
     @AppStorage("difficulty") private var difficultyName = Difficulty.beginner.name
     @State private var orientation = UIInterfaceOrientation.portrait
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
@@ -13,16 +14,16 @@ struct ContentView: View {
             case .top:
                 VStack(spacing: 16) {
                     controls(beside: false)
-                    BoardView(model: model)
+                    board
                 }
             case .left:
                 HStack(spacing: 16) {
                     sideControls
-                    BoardView(model: model)
+                    board
                 }
             case .right:
                 HStack(spacing: 16) {
-                    BoardView(model: model)
+                    board
                     sideControls
                 }
             }
@@ -32,6 +33,14 @@ struct ContentView: View {
         .background(Palette.open.opacity(0.5).ignoresSafeArea())
         .background(InterfaceOrientationReader { orientation = $0 })
         .onAppear { model.difficulty = difficulty.wrappedValue }
+        // Looking away (another app, the app switcher, Control Center, the lock
+        // button) pauses a game under way. It stays paused until the paused screen
+        // is tapped.
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active {
+                model.pause()
+            }
+        }
         .sensoryFeedback(.impact(weight: .medium), trigger: model.flagToggles)
         .sensoryFeedback(trigger: model.game.state) { _, new in
             switch new {
@@ -40,6 +49,18 @@ struct ContentView: View {
             case .inactive, .active: nil
             }
         }
+    }
+
+    /// The board, covered while the game is paused. It stays underneath so it
+    /// keeps its zoom, but out of reach of a tap and of VoiceOver.
+    private var board: some View {
+        BoardView(model: model)
+            .accessibilityHidden(model.isPaused)
+            .overlay {
+                if model.isPaused {
+                    PausedView { model.resume() }
+                }
+            }
     }
 
     /// Above the board upright; on the phone's top edge, beside it, on its side.
