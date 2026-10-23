@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  faSmile,
-  faFaceFrown,
-  faGrinHearts,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from 'react';
+import { faSmile, faFaceFrown, faGrinHearts } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { useBoardContext } from "../context/BoardContext";
-import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
-import { Timer } from "./Timer";
-import { formatCounter } from "./formatCounter";
+import { useBoardContext } from '../context/BoardContext';
+import { useScoreboardContext, GameState } from '../context/ScoreboardContext';
+import { Timer } from './Timer';
+import { formatCounter } from './formatCounter';
 
 export function Scoreboard(): React.ReactElement {
   const { reset, flags, mineCount } = useBoardContext();
@@ -39,9 +35,7 @@ export function Scoreboard(): React.ReactElement {
   return (
     <div className="scoreboard">
       <div className="mine-count">
-        <span className="visually-hidden">
-          Mines remaining: {minesRemaining}
-        </span>
+        <span className="visually-hidden">Mines remaining: {minesRemaining}</span>
         <span aria-hidden="true">{formatCounter(minesRemaining)}</span>
       </div>
       <div className="reset-container">
@@ -64,7 +58,7 @@ export function Scoreboard(): React.ReactElement {
       </div>
       <Timer timer={timer} />
       <div className="visually-hidden" role="status">
-        {isGameWon ? "You won!" : isGameLost ? "You lost!" : ""}
+        {isGameWon ? 'You won!' : isGameLost ? 'You lost!' : ''}
       </div>
     </div>
   );

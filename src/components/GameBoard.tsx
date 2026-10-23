@@ -1,7 +1,7 @@
-import React, { KeyboardEvent, FocusEvent, useRef, useState } from "react";
+import React, { KeyboardEvent, FocusEvent, useRef, useState } from 'react';
 
-import { useBoardContext } from "../context/BoardContext/BoardContext";
-import { Cell } from "./Cell";
+import { useBoardContext } from '../context/BoardContext/BoardContext';
+import { Cell } from './Cell';
 
 export function GameBoard(): React.ReactElement {
   const { board } = useBoardContext();
@@ -14,9 +14,7 @@ export function GameBoard(): React.ReactElement {
   const boardRef = useRef<HTMLDivElement>(null);
 
   function cellButtons(): HTMLButtonElement[] {
-    return Array.from(
-      boardRef.current?.querySelectorAll<HTMLButtonElement>("button.cell") ?? []
-    );
+    return Array.from(boardRef.current?.querySelectorAll<HTMLButtonElement>('button.cell') ?? []);
   }
 
   // Keep the active index in sync with wherever focus actually lands (tabbing
@@ -34,23 +32,23 @@ export function GameBoard(): React.ReactElement {
     let column = focusedIndex % cols;
 
     switch (event.key) {
-      case "ArrowUp":
+      case 'ArrowUp':
         row = Math.max(0, row - 1);
         break;
-      case "ArrowDown":
+      case 'ArrowDown':
         row = Math.min(rows - 1, row + 1);
         break;
-      case "ArrowLeft":
+      case 'ArrowLeft':
         column = Math.max(0, column - 1);
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         column = Math.min(cols - 1, column + 1);
         break;
-      case "Home":
+      case 'Home':
         column = 0;
         if (event.ctrlKey) row = 0;
         break;
-      case "End":
+      case 'End':
         column = cols - 1;
         if (event.ctrlKey) row = rows - 1;
         break;

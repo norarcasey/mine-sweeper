@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import MineSweeper from "./MineSweeper";
-import { Difficulty } from "./context/BoardContext";
+import MineSweeper from './MineSweeper';
+import { Difficulty } from './context/BoardContext';
 
 //👇 This default export determines where your story goes in the story list
 const meta: Meta<typeof MineSweeper> = {

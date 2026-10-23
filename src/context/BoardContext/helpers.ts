@@ -1,4 +1,4 @@
-import { CellData, CellType, Difficulty } from "./types";
+import { CellData, CellType, Difficulty } from './types';
 
 function getBoardSize(difficulty: Difficulty): number[] {
   switch (difficulty) {
@@ -30,12 +30,7 @@ export function getAdjacentCoordinates(row: number, col: number) {
  * The clicked cell plus its on-board neighbours, as cell ids. Used to keep
  * the first reveal (and the region it opens) free of mines.
  */
-export function getSafeCellIds(
-  row: number,
-  column: number,
-  rows: number,
-  cols: number
-): number[] {
+export function getSafeCellIds(row: number, column: number, rows: number, cols: number): number[] {
   return [[row, column], ...getAdjacentCoordinates(row, column)]
     .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols)
     .map(([r, c]) => r * cols + c);
@@ -54,13 +49,13 @@ export function getEmptyBoard(difficulty: Difficulty): CellData[][] {
     Array.from({ length: cols }, () => ({
       type: CellType.Empty,
       count: 0,
-    }))
+    })),
   );
 }
 
 export function getInitialBoard(
   difficulty: Difficulty,
-  safeIds: number[] = []
+  safeIds: number[] = [],
 ): {
   initialBoard: CellData[][];
   mineIds: number[];
@@ -121,6 +116,6 @@ export function isFlagWin(mineIds: number[], flaggedIds: number[]): boolean {
  */
 export function isRevealWin(board: CellData[][]): boolean {
   return board.every((row) =>
-    row.every((cell) => cell.count === -1 || cell.type === CellType.Revealed)
+    row.every((cell) => cell.count === -1 || cell.type === CellType.Revealed),
   );
 }

@@ -1,1 +1,1 @@
-export * from "./ScoreboardContext";
+export * from './ScoreboardContext';

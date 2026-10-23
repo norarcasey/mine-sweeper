@@ -2,4 +2,4 @@
 // expect(element).toHaveTextContent(/react/i)
 // The /vitest entry registers them on Vitest's expect.
 // learn more: https://github.com/testing-library/jest-dom
-import "@testing-library/jest-dom/vitest";
+import '@testing-library/jest-dom/vitest';

@@ -1,9 +1,9 @@
-import React, { KeyboardEvent, MouseEvent } from "react";
+import React, { KeyboardEvent, MouseEvent } from 'react';
 
-import { CellData, CellType, useBoardContext } from "../context/BoardContext/";
-import { useScoreboardContext, GameState } from "../context/ScoreboardContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBomb, faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
+import { CellData, CellType, useBoardContext } from '../context/BoardContext/';
+import { useScoreboardContext, GameState } from '../context/ScoreboardContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBomb, faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 
 interface CellProps {
   cell: CellData;
@@ -12,15 +12,9 @@ interface CellProps {
   tabIndex: number;
 }
 
-export function Cell({
-  cell,
-  row,
-  column,
-  tabIndex,
-}: CellProps): React.ReactElement {
+export function Cell({ cell, row, column, tabIndex }: CellProps): React.ReactElement {
   const { explode, flag, reveal, chord, flags, board } = useBoardContext();
-  const { startGame, setGameLost, setGameWon, isGameOver, gameState } =
-    useScoreboardContext();
+  const { startGame, setGameLost, setGameWon, isGameOver, gameState } = useScoreboardContext();
 
   const isRevealed = cell.type === CellType.Revealed;
   const isExploded = cell.type === CellType.Exploded;
@@ -28,8 +22,7 @@ export function Cell({
   const isMine = cell.count === -1;
   // On a loss, reveal every mine the player hadn't already flagged so they can
   // see where the bombs were.
-  const isRevealedMine =
-    gameState === GameState.Lost && isMine && !isFlagged && !isExploded;
+  const isRevealedMine = gameState === GameState.Lost && isMine && !isFlagged && !isExploded;
 
   function toggleFlag(): void {
     if (isRevealed || isGameOver) {
@@ -73,7 +66,7 @@ export function Cell({
   // Reveal is keyboard-accessible by default (Enter/Space activate the button);
   // "F" provides a keyboard equivalent for the right-click flag.
   function handleKeyDown(e: KeyboardEvent<HTMLButtonElement>): void {
-    if (e.key === "f" || e.key === "F") {
+    if (e.key === 'f' || e.key === 'F') {
       e.preventDefault();
       toggleFlag();
     }
@@ -109,20 +102,20 @@ export function Cell({
     }
   }
 
-  const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : "";
-  const isExplodedClassName = isExploded ? `revealed exploded` : "";
-  const isRevealedMineClassName = isRevealedMine ? "revealed mine" : "";
-  const isFlaggedClassName = isFlagged ? "flagged" : "";
+  const isRevealedClassName = isRevealed ? `revealed adj-${cell.count}` : '';
+  const isExplodedClassName = isExploded ? `revealed exploded` : '';
+  const isRevealedMineClassName = isRevealedMine ? 'revealed mine' : '';
+  const isFlaggedClassName = isFlagged ? 'flagged' : '';
 
   const describeState = (): string => {
-    if (isFlagged) return "flagged";
-    if (isExploded) return "mine, exploded";
-    if (isRevealedMine) return "mine";
+    if (isFlagged) return 'flagged';
+    if (isExploded) return 'mine, exploded';
+    if (isRevealedMine) return 'mine';
     if (isRevealed) {
-      if (cell.count === 0) return "empty";
-      return `${cell.count} adjacent ${cell.count === 1 ? "mine" : "mines"}`;
+      if (cell.count === 0) return 'empty';
+      return `${cell.count} adjacent ${cell.count === 1 ? 'mine' : 'mines'}`;
     }
-    return "hidden";
+    return 'hidden';
   };
   const ariaLabel = `Row ${row + 1}, column ${column + 1}, ${describeState()}`;
 
@@ -140,7 +133,7 @@ export function Cell({
     >
       {(isExploded || isRevealedMine) && <FontAwesomeIcon icon={faBomb} />}
       {isFlagged && <FontAwesomeIcon icon={faFlagCheckered} />}
-      {isRevealed && cell.count > 0 ? cell.count : ""}
+      {isRevealed && cell.count > 0 ? cell.count : ''}
     </button>
   );
 }

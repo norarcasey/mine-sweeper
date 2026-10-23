@@ -43,7 +43,7 @@ jobs:
       - name: Build Storybook
         run: yarn build-storybook
         env:
-          STORYBOOK_DISABLE_TELEMETRY: "1"
+          STORYBOOK_DISABLE_TELEMETRY: '1'
 
   # The iPhone half: MineSweeperKit's swift test and the app's unit tests,
   # the same `ios/test.sh gate` as on the laptop. The UI tests run in local

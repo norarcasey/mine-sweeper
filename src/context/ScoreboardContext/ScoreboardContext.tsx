@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 export enum GameState {
   Lost,
@@ -41,8 +41,7 @@ export function ScoreboardProvider({
     setGameState(GameState.Won);
   }
 
-  const isGameOver =
-    gameState === GameState.Lost || gameState === GameState.Won;
+  const isGameOver = gameState === GameState.Lost || gameState === GameState.Won;
 
   return (
     <ScoreboardContext.Provider
@@ -65,7 +64,7 @@ export function useScoreboardContext() {
 
   if (!scoreboardContext) {
     throw new Error(
-      "Scoreboard Context not available, please check that the provider has been added to the tree."
+      'Scoreboard Context not available, please check that the provider has been added to the tree.',
     );
   }
 

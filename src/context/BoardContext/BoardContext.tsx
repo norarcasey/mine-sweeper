@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 import {
   getAdjacentCoordinates,
@@ -7,8 +7,8 @@ import {
   getSafeCellIds,
   isFlagWin,
   isRevealWin,
-} from "./helpers";
-import { Difficulty, CellData, CellType } from "./types";
+} from './helpers';
+import { Difficulty, CellData, CellType } from './types';
 
 const BoardContext = createContext<{
   board: CellData[][];
@@ -19,10 +19,7 @@ const BoardContext = createContext<{
   reset: () => void;
   explode: (row: number, column: number) => void;
   flag: (row: number, column: number) => boolean;
-  chord: (
-    row: number,
-    column: number
-  ) => { exploded: boolean; won: boolean };
+  chord: (row: number, column: number) => { exploded: boolean; won: boolean };
 } | null>(null);
 
 // Deep clone so updates never mutate the cell objects held by current state.
@@ -31,22 +28,13 @@ function cloneBoard(board: CellData[][]): CellData[][] {
 }
 
 // Flood-fill from an empty cell, revealing neighbours and skipping flagged ones.
-function revealAdjacent(
-  row: number,
-  column: number,
-  board: CellData[][],
-  flagged: Set<number>
-) {
+function revealAdjacent(row: number, column: number, board: CellData[][], flagged: Set<number>) {
   const cols = board[0].length;
 
   for (const [adjRow, adjCol] of getAdjacentCoordinates(row, column)) {
     const adjCell = board[adjRow]?.[adjCol];
 
-    if (
-      adjCell &&
-      adjCell.type !== CellType.Revealed &&
-      !flagged.has(adjRow * cols + adjCol)
-    ) {
+    if (adjCell && adjCell.type !== CellType.Revealed && !flagged.has(adjRow * cols + adjCol)) {
       adjCell.type = CellType.Revealed;
       if (adjCell.count === 0) {
         revealAdjacent(adjRow, adjCol, board, flagged);
@@ -66,9 +54,7 @@ export function BoardProvider({
   // the opening click is always safe. `flags` is the single source of truth for
   // which cells are flagged — flagging never changes a cell's type.
   const [mines, setMines] = useState<number[]>([]);
-  const [board, setBoard] = useState<CellData[][]>(() =>
-    getEmptyBoard(difficulty)
-  );
+  const [board, setBoard] = useState<CellData[][]>(() => getEmptyBoard(difficulty));
   const [flags, setFlags] = useState<number[]>([]);
   const [started, setStarted] = useState(false);
 
@@ -109,21 +95,18 @@ export function BoardProvider({
   // number as the number itself, this reveals every remaining un-flagged
   // neighbour in one move. If a flag was placed wrongly, the un-flagged mine it
   // left behind is revealed and detonates — exactly like clicking it directly.
-  function chord(
-    row: number,
-    column: number
-  ): { exploded: boolean; won: boolean } {
+  function chord(row: number, column: number): { exploded: boolean; won: boolean } {
     const cols = board[0].length;
     const flagged = new Set(flags);
 
     const adjacent = getAdjacentCoordinates(row, column).filter(
-      ([adjRow, adjCol]) => board[adjRow]?.[adjCol] !== undefined
+      ([adjRow, adjCol]) => board[adjRow]?.[adjCol] !== undefined,
     );
 
     // Only fire when the surrounding flag count matches the cell's number —
     // the player's assertion that every adjacent mine is already flagged.
     const adjacentFlagCount = adjacent.filter(([adjRow, adjCol]) =>
-      flagged.has(adjRow * cols + adjCol)
+      flagged.has(adjRow * cols + adjCol),
     ).length;
 
     if (adjacentFlagCount !== board[row][column].count) {
@@ -227,7 +210,7 @@ export function useBoardContext() {
 
   if (!boardContext) {
     throw new Error(
-      "Board Context not available, please check that the provider has been added to the tree."
+      'Board Context not available, please check that the provider has been added to the tree.',
     );
   }
 

@@ -6,7 +6,7 @@
  */
 export function formatCounter(value: number): string {
   if (value < 0) {
-    return "-" + Math.abs(value).toString().padStart(2, "0");
+    return '-' + Math.abs(value).toString().padStart(2, '0');
   }
-  return value.toString().padStart(3, "0");
+  return value.toString().padStart(3, '0');
 }
