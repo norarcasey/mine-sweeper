@@ -114,6 +114,12 @@ struct ControlsPlacementTests {
         #expect(ControlsPlacement(landscape: true, topOnRight: false) == .left)
         #expect(ControlsPlacement(landscape: true, topOnRight: true) == .right)
     }
+
+    @Test func isBesideTheBoardOnlyOnItsSide() {
+        #expect(!ControlsPlacement.top.isBeside)
+        #expect(ControlsPlacement.left.isBeside)
+        #expect(ControlsPlacement.right.isBeside)
+    }
 }
 
 @Suite("GameModel")

@@ -58,8 +58,11 @@ Upright, the picker, the Flag toggle and the scoreboard sit above the board. Tur
 the phone keeps them on the edge that was its top, as a column beside the board with the text
 upright: on the left when the phone is turned anticlockwise, on the right when clockwise. The
 board then has the whole height, and every board that is not turned fits whole, both ways, so
-landscape shows all of it without scrolling. For Expert that means cells of about 13pt on a 6.3"
-phone; a pinch zooms them as it does upright. The size classes say the phone is on its side but
+landscape shows all of it without scrolling. The column is kept narrow so the board gets the
+width: the picker is a menu showing the one difficulty chosen, the scoreboard stacks the
+counter, the face and the clock, and the safe area's 59pt at each end stands in for the padding.
+For Expert that means cells of about 21pt on a 6.3" phone, where a column as wide as the
+segmented picker left 13pt (MINE-15); a pinch zooms them as it does upright. The size classes say the phone is on its side but
 not which way, so `InterfaceOrientationReader` watches the window scene's orientation.
 
 The other options were a 2-D scrolling grid at a fixed size, which means panning across 30

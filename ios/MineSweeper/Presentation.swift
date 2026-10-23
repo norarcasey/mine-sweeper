@@ -105,6 +105,9 @@ enum ControlsPlacement: Equatable {
     init(landscape: Bool, topOnRight: Bool) {
         self = landscape ? (topOnRight ? .right : .left) : .top
     }
+
+    /// Beside the board, where the controls are a narrow column.
+    var isBeside: Bool { self != .top }
 }
 
 extension Difficulty {

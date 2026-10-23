@@ -2,17 +2,20 @@ import MineSweeperKit
 import SwiftUI
 
 /// Mines left, the face that starts a new game, and the clock. Mirrors
-/// `src/components/Scoreboard.tsx`.
+/// `src/components/Scoreboard.tsx`. A row above the board; a column, top to
+/// bottom in the same order, beside it.
 struct ScoreboardView: View {
     let model: GameModel
+    var axis: Axis = .horizontal
 
     var body: some View {
-        HStack {
+        let layout = axis == .horizontal ? AnyLayout(HStackLayout()) : AnyLayout(VStackLayout(spacing: 12))
+        layout {
             LEDText(formatCounter(model.game.minesRemaining))
                 .accessibilityElement()
                 .accessibilityLabel("Mines remaining: \(model.game.minesRemaining)")
                 .accessibilityIdentifier("mines-remaining")
-            Spacer()
+            spacer
             Button(action: model.newGame) {
                 Text(verbatim: face)
                     .font(.system(size: 34))
@@ -23,7 +26,7 @@ struct ScoreboardView: View {
             .accessibilityLabel("New game")
             .accessibilityValue(outcome(model.game.state))
             .accessibilityIdentifier("new-game")
-            Spacer()
+            spacer
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 let seconds = model.elapsedSeconds(at: context.date)
                 LEDText(formatTimer(seconds: seconds))
@@ -31,6 +34,13 @@ struct ScoreboardView: View {
                     .accessibilityLabel(timerLabel(seconds: seconds))
                     .accessibilityIdentifier("timer")
             }
+        }
+    }
+
+    /// Spreads the row across the width; a column stays packed.
+    @ViewBuilder private var spacer: some View {
+        if axis == .horizontal {
+            Spacer()
         }
     }
 

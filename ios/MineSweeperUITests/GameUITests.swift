@@ -106,6 +106,7 @@ final class GameUITests: XCTestCase {
         }, evaluatedWith: nil)
         wait(for: [turnedLeft], timeout: 5)
         XCTAssertTrue(window.frame.contains(cell(8, 8).frame), "the whole board shows")
+        XCTAssertLessThan(flagMode.frame.width, window.frame.width / 5, "beside the board, the controls are a narrow column")
 
         // Turned clockwise: top on the right.
         XCUIDevice.shared.orientation = .landscapeRight

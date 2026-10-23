@@ -12,7 +12,7 @@ struct ContentView: View {
             switch placement {
             case .top:
                 VStack(spacing: 16) {
-                    controls
+                    controls(beside: false)
                     BoardView(model: model)
                 }
             case .left:
@@ -27,7 +27,8 @@ struct ContentView: View {
                 }
             }
         }
-        .padding()
+        // On its side the safe area already holds the content 59pt off each end.
+        .padding(placement.isBeside ? .vertical : .all)
         .background(Palette.open.opacity(0.5).ignoresSafeArea())
         .background(InterfaceOrientationReader { orientation = $0 })
         .onAppear { model.difficulty = difficulty.wrappedValue }
@@ -46,23 +47,25 @@ struct ContentView: View {
         ControlsPlacement(landscape: orientation.isLandscape, topOnRight: orientation == .landscapeLeft)
     }
 
-    /// The controls as a column only as wide as the picker needs, centred on
-    /// the edge as they are centred along the top when upright.
+    /// The controls as a narrow column, centred on the edge as they are centred
+    /// along the top when upright. The picker is a menu and the scoreboard a
+    /// column, so the board gets the width a row of either would take.
     private var sideControls: some View {
-        controls
+        controls(beside: true)
             .fixedSize(horizontal: true, vertical: false)
             .frame(maxHeight: .infinity)
     }
 
-    private var controls: some View {
+    private func controls(beside: Bool) -> some View {
         @Bindable var model = model
         return VStack(spacing: 16) {
-            Picker("Difficulty", selection: difficulty) {
-                ForEach(Difficulty.allCases, id: \.self) { difficulty in
-                    Text(difficulty.name).tag(difficulty)
+            Group {
+                if beside {
+                    picker.pickerStyle(.menu)
+                } else {
+                    picker.pickerStyle(.segmented)
                 }
             }
-            .pickerStyle(.segmented)
             .accessibilityIdentifier("difficulty")
 
             // When on, a tap flags instead of revealing. Every game starts with it off.
@@ -75,7 +78,15 @@ struct ContentView: View {
             .accessibilityHint("When on, tapping a cell flags it instead of revealing it")
             .accessibilityIdentifier("flag-mode")
 
-            ScoreboardView(model: model)
+            ScoreboardView(model: model, axis: beside ? .vertical : .horizontal)
+        }
+    }
+
+    private var picker: some View {
+        Picker("Difficulty", selection: difficulty) {
+            ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                Text(difficulty.name).tag(difficulty)
+            }
         }
     }
 
