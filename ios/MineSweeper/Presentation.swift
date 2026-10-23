@@ -64,7 +64,9 @@ func outcome(_ state: GameState) -> String {
 /// rows of 16 and scrolls one way only. Turning it across the diagonal keeps
 /// every cell's neighbours, so the game is the same game.
 ///
-/// Cells fit the width, up to `maximumCell`, then scale by `zoom`.
+/// Cells fit the space, up to `maximumCell`, then scale by `zoom`. A turned
+/// board fits the width only and scrolls the rest of its height; every other
+/// board fits whole, so a phone on its side shows all of it.
 struct BoardLayout: Equatable {
     static let maximumCell: CGFloat = 44
 
@@ -78,13 +80,30 @@ struct BoardLayout: Equatable {
         transposed = boardColumns > boardRows && available.height > available.width
         rows = transposed ? boardColumns : boardRows
         columns = transposed ? boardRows : boardColumns
-        let fit = columns > 0 ? available.width / CGFloat(columns) : 0
+        let fitWidth = columns > 0 ? available.width / CGFloat(columns) : 0
+        let fitHeight = rows > 0 ? available.height / CGFloat(rows) : 0
+        let fit = transposed ? fitWidth : min(fitWidth, fitHeight)
         cellSize = (min(fit, Self.maximumCell) * zoom).rounded(.down)
     }
 
     /// The game's row and column for a cell as drawn.
     func gamePosition(row: Int, column: Int) -> Coordinate {
         transposed ? Coordinate(row: column, column: row) : Coordinate(row: row, column: column)
+    }
+}
+
+/// Where the picker, the Flag toggle and the scoreboard sit.
+///
+/// Upright, they sit above the board. On its side, they stay on the edge that
+/// was the top of the phone and turn with it, as a column beside the board, so
+/// the board has the whole height.
+enum ControlsPlacement: Equatable {
+    case top, left, right
+
+    /// `landscape` is the screen being wider than tall. `topOnRight` is the
+    /// phone turned clockwise, so its top edge is on the right.
+    init(landscape: Bool, topOnRight: Bool) {
+        self = landscape ? (topOnRight ? .right : .left) : .top
     }
 }
 

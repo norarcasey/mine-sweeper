@@ -52,6 +52,16 @@ zooms** from 1× to 3× when the cells are too small to hit (about 22pt on a 6.1
 the board across its diagonal keeps every cell's neighbours, so it is the same game: only the
 picture differs, which `CLAUDE.md` allows. In landscape, Expert is drawn as it is.
 
+### On its side
+
+Upright, the picker, the Flag toggle and the scoreboard sit above the board. Turned on its side,
+the phone keeps them on the edge that was its top, as a column beside the board with the text
+upright: on the left when the phone is turned anticlockwise, on the right when clockwise. The
+board then has the whole height, and every board that is not turned fits whole, both ways, so
+landscape shows all of it without scrolling. For Expert that means cells of about 13pt on a 6.3"
+phone; a pinch zooms them as it does upright. The size classes say the phone is on its side but
+not which way, so `InterfaceOrientationReader` watches the window scene's orientation.
+
 The other options were a 2-D scrolling grid at a fixed size, which means panning across 30
 columns to play, and zoom alone, which starts with 12pt cells. Turning the board leaves only one
 direction to scroll and keeps the cells as large as the width allows.

@@ -73,7 +73,15 @@ struct BoardLayoutTests {
         #expect(!layout.transposed)
         #expect(layout.rows == 16)
         #expect(layout.columns == 30)
-        #expect(layout.cellSize == 26)
+        // 300 / 16 rows: the whole board fits, rather than 780 / 30 = 26.
+        #expect(layout.cellSize == 18)
+    }
+
+    @Test func fitsAnUnturnedBoardToTheHeightToo() {
+        // Beside the controls on a phone on its side, Beginner fits whole.
+        #expect(BoardLayout(rows: 9, columns: 9, available: CGSize(width: 450, height: 340)).cellSize == 37)
+        // A turned board fits the width and scrolls the rest of its height.
+        #expect(BoardLayout(rows: 16, columns: 30, available: CGSize(width: 361, height: 500)).cellSize == 22)
     }
 
     @Test func neverTurnsASquareBoard() {
@@ -92,6 +100,19 @@ struct BoardLayoutTests {
         #expect(layout.gamePosition(row: 29, column: 0) == Coordinate(row: 0, column: 29))
         let flat = BoardLayout(rows: 16, columns: 30, available: landscape)
         #expect(flat.gamePosition(row: 3, column: 7) == Coordinate(row: 3, column: 7))
+    }
+}
+
+@Suite("ControlsPlacement")
+struct ControlsPlacementTests {
+    @Test func sitsAboveTheBoardUpright() {
+        #expect(ControlsPlacement(landscape: false, topOnRight: false) == .top)
+        #expect(ControlsPlacement(landscape: false, topOnRight: true) == .top)
+    }
+
+    @Test func followsTheTopOfThePhoneOnItsSide() {
+        #expect(ControlsPlacement(landscape: true, topOnRight: false) == .left)
+        #expect(ControlsPlacement(landscape: true, topOnRight: true) == .right)
     }
 }
 

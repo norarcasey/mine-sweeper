@@ -1,13 +1,62 @@
 import MineSweeperKit
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     let model: GameModel
     @AppStorage("difficulty") private var difficultyName = Difficulty.beginner.name
+    @State private var orientation = UIInterfaceOrientation.portrait
 
     var body: some View {
+        Group {
+            switch placement {
+            case .top:
+                VStack(spacing: 16) {
+                    controls
+                    BoardView(model: model)
+                }
+            case .left:
+                HStack(spacing: 16) {
+                    sideControls
+                    BoardView(model: model)
+                }
+            case .right:
+                HStack(spacing: 16) {
+                    BoardView(model: model)
+                    sideControls
+                }
+            }
+        }
+        .padding()
+        .background(Palette.open.opacity(0.5).ignoresSafeArea())
+        .background(InterfaceOrientationReader { orientation = $0 })
+        .onAppear { model.difficulty = difficulty.wrappedValue }
+        .sensoryFeedback(.impact(weight: .medium), trigger: model.flagToggles)
+        .sensoryFeedback(trigger: model.game.state) { _, new in
+            switch new {
+            case .lost: .error
+            case .won: .success
+            case .inactive, .active: nil
+            }
+        }
+    }
+
+    /// Above the board upright; on the phone's top edge, beside it, on its side.
+    private var placement: ControlsPlacement {
+        ControlsPlacement(landscape: orientation.isLandscape, topOnRight: orientation == .landscapeLeft)
+    }
+
+    /// The controls as a column only as wide as the picker needs, centred on
+    /// the edge as they are centred along the top when upright.
+    private var sideControls: some View {
+        controls
+            .fixedSize(horizontal: true, vertical: false)
+            .frame(maxHeight: .infinity)
+    }
+
+    private var controls: some View {
         @Bindable var model = model
-        VStack(spacing: 16) {
+        return VStack(spacing: 16) {
             Picker("Difficulty", selection: difficulty) {
                 ForEach(Difficulty.allCases, id: \.self) { difficulty in
                     Text(difficulty.name).tag(difficulty)
@@ -27,18 +76,6 @@ struct ContentView: View {
             .accessibilityIdentifier("flag-mode")
 
             ScoreboardView(model: model)
-            BoardView(model: model)
-        }
-        .padding()
-        .background(Palette.open.opacity(0.5).ignoresSafeArea())
-        .onAppear { model.difficulty = difficulty.wrappedValue }
-        .sensoryFeedback(.impact(weight: .medium), trigger: model.flagToggles)
-        .sensoryFeedback(trigger: model.game.state) { _, new in
-            switch new {
-            case .lost: .error
-            case .won: .success
-            case .inactive, .active: nil
-            }
         }
     }
 

@@ -17,6 +17,10 @@ final class GameUITests: XCTestCase {
         app.launch()
     }
 
+    override func tearDown() async throws {
+        XCUIDevice.shared.orientation = .portrait
+    }
+
     /// The board the app will lay down after the opening reveal.
     private func replay() -> Game {
         var game = Game(difficulty: .beginner)
@@ -85,6 +89,31 @@ final class GameUITests: XCTestCase {
         app.buttons["new-game"].tap()
         XCTAssertEqual(app.buttons["new-game"].value as? String, "")
         XCTAssertEqual(cell(row, column).label, "Row \(row + 1), column \(column + 1), hidden")
+    }
+
+    /// On its side, the controls stay on the phone's top edge, beside the
+    /// board, and the whole board shows.
+    func testTheControlsFollowTheTopOfThePhone() {
+        let flagMode = app.descendants(matching: .any)["flag-mode"]
+        let window = app.windows.firstMatch
+        XCTAssertTrue(flagMode.waitForExistence(timeout: 5))
+        XCTAssertLessThan(flagMode.frame.maxY, cell(0, 0).frame.minY, "upright, the controls are above the board")
+
+        // Turned anticlockwise (the home indicator on the right): top on the left.
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let turnedLeft = expectation(for: NSPredicate { _, _ in
+            flagMode.frame.maxX < self.cell(0, 0).frame.minX
+        }, evaluatedWith: nil)
+        wait(for: [turnedLeft], timeout: 5)
+        XCTAssertTrue(window.frame.contains(cell(8, 8).frame), "the whole board shows")
+
+        // Turned clockwise: top on the right.
+        XCUIDevice.shared.orientation = .landscapeRight
+        let turnedRight = expectation(for: NSPredicate { _, _ in
+            flagMode.frame.minX > self.cell(0, 8).frame.maxX
+        }, evaluatedWith: nil)
+        wait(for: [turnedRight], timeout: 5)
+        XCTAssertTrue(window.frame.contains(cell(8, 8).frame), "the whole board shows")
     }
 
     func testFlagModeFlagsATappedMine() throws {
