@@ -35,6 +35,8 @@
     "coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "gate": "yarn lint && yarn typecheck && yarn test",
     "verify": "yarn gate && yarn ts-build && STORYBOOK_DISABLE_TELEMETRY=1 yarn build-storybook && ios/test.sh all"
   },
@@ -58,6 +60,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
+    "prettier": "^3",
     "react": "^19",
     "react-dom": "^19",
     "storybook": "^10",

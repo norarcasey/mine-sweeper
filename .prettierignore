@@ -1,0 +1,6 @@
+dist/
+storybook-static/
+coverage/
+yarn.lock
+# Xcode writes these in its own style and rewrites them on every asset edit.
+ios/**/*.xcassets/
