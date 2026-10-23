@@ -65,7 +65,8 @@ Run yarn through corepack, under that Node:
 ```bash
 fnm exec -- corepack yarn install --frozen-lockfile
 fnm exec -- corepack yarn storybook   # develop the component on :6006
-fnm exec -- corepack yarn gate        # lint, typecheck, Vitest: the command CI runs
+fnm exec -- corepack yarn gate        # format:check, lint, typecheck, Vitest: the command CI runs
+fnm exec -- corepack yarn format      # fixes what format:check reports
 fnm exec -- corepack yarn verify      # before pushing
 ```
 
@@ -73,9 +74,14 @@ fnm exec -- corepack yarn verify      # before pushing
 `~/.zshrc` also switches to Node 22 when a terminal `cd`s here, so bare `corepack yarn …` works
 there. An agent's shell does not run that hook and still has Node 26 (MINE-8).
 
-`yarn gate` is lint, typecheck and Vitest, in CI's order, and CI's `Gate` step runs the
-same command. There is no Prettier here, so there is no `format:check`. `yarn verify` is the
-gate, then the library build, the Storybook build and `ios/test.sh all`.
+`yarn gate` is Prettier's `format:check`, lint, typecheck and Vitest, cheapest first, and CI's
+`Gate` step runs the same command. The gate only checks format: `yarn format` fixes it. Prettier
+uses the house config (`.prettierrc`, the same as every other repo) and skips Swift, which it
+can't parse, and Xcode's asset catalogs, which Xcode rewrites in its own style. The one-time
+reformat is in `.git-blame-ignore-revs`, so run `git config blame.ignoreRevsFile
+.git-blame-ignore-revs` once per clone to keep it out of `git blame` (GitHub reads the file
+itself). `yarn verify` is the gate, then the library build, the Storybook build and
+`ios/test.sh all`.
 
 `ios/test.sh` is the iPhone half's one command. `gate` runs `swift test` for
 `ios/MineSweeperKit`, then the app's unit tests through `xcodebuild test` on the first

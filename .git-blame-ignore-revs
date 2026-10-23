@@ -1,0 +1,5 @@
+# Commits `git blame` skips: formatting only, no change in behaviour.
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Format everything with Prettier (MINE-10)
+af31b33c840e113acc2ea9706d3a98c4219cba2a

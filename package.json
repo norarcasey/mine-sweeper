@@ -37,7 +37,7 @@
     "build-storybook": "storybook build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "gate": "yarn lint && yarn typecheck && yarn test",
+    "gate": "yarn format:check && yarn lint && yarn typecheck && yarn test",
     "verify": "yarn gate && yarn ts-build && STORYBOOK_DISABLE_TELEMETRY=1 yarn build-storybook && ios/test.sh all"
   },
   "resolutions": {
