@@ -31,6 +31,11 @@ destination in Xcode and press Run.
   other neighbours open.
 - **Long-press** flags or unflags. A long-press on a revealed number chords, as a right-click
   does in the component.
+- The **Flag** toggle under the picker makes a tap flag or unflag a hidden cell instead of
+  revealing it, so flagging a mine never trips it. A tap on a revealed number still chords, and
+  a long-press still flags. Every game starts with Flag off, from the face or the picker. It is
+  there because a long-press cut short is a tap, and a tap on the mine being flagged ends the
+  game. It is presentation only, so the component has no equivalent.
 - The **face** starts a new game. The **picker** changes difficulty and starts a new game, and
   the choice is kept between launches.
 - **Haptics:** a tap on each flag, an error on a loss, a success on a win.

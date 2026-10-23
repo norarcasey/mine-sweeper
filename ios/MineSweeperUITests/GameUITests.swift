@@ -86,4 +86,27 @@ final class GameUITests: XCTestCase {
         XCTAssertEqual(app.buttons["new-game"].value as? String, "")
         XCTAssertEqual(cell(row, column).label, "Row \(row + 1), column \(column + 1), hidden")
     }
+
+    func testFlagModeFlagsATappedMine() throws {
+        let game = replay()
+        tap(Self.opener.row, Self.opener.column)
+
+        let flagMode = app.descendants(matching: .any)["flag-mode"]
+        XCTAssertTrue(flagMode.waitForExistence(timeout: 5))
+        flagMode.tap()
+
+        // With Flag on, a tap on a mine flags it instead of losing.
+        let mine = try XCTUnwrap(game.mineIDs.first)
+        let row = mine / game.columns
+        let column = mine % game.columns
+        tap(row, column)
+        XCTAssertEqual(cell(row, column).label, "Row \(row + 1), column \(column + 1), flagged")
+        XCTAssertEqual(app.buttons["new-game"].value as? String, "")
+        XCTAssertEqual(app.descendants(matching: .any)["mines-remaining"].label, "Mines remaining: 9")
+
+        // A new game starts with Flag off, so a tap reveals again.
+        app.buttons["new-game"].tap()
+        tap(Self.opener.row, Self.opener.column)
+        XCTAssertEqual(cell(Self.opener.row, Self.opener.column).label, "Row 5, column 5, empty")
+    }
 }

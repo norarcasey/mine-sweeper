@@ -6,6 +6,7 @@ struct ContentView: View {
     @AppStorage("difficulty") private var difficultyName = Difficulty.beginner.name
 
     var body: some View {
+        @Bindable var model = model
         VStack(spacing: 16) {
             Picker("Difficulty", selection: difficulty) {
                 ForEach(Difficulty.allCases, id: \.self) { difficulty in
@@ -14,6 +15,16 @@ struct ContentView: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("difficulty")
+
+            // When on, a tap flags instead of revealing. Every game starts with it off.
+            Toggle(isOn: $model.isFlagMode) {
+                Label("Flag", systemImage: "flag.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .toggleStyle(.button)
+            .tint(Palette.flag)
+            .accessibilityHint("When on, tapping a cell flags it instead of revealing it")
+            .accessibilityIdentifier("flag-mode")
 
             ScoreboardView(model: model)
             BoardView(model: model)

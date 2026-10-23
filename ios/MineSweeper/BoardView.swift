@@ -50,7 +50,7 @@ struct BoardView: View {
                             column: position.column,
                             appearance: model.game.appearance(row: position.row, column: position.column),
                             size: layout.cellSize,
-                            onTap: { model.reveal(row: position.row, column: position.column) },
+                            onTap: { model.tap(row: position.row, column: position.column) },
                             onLongPress: { model.longPress(row: position.row, column: position.column) }
                         )
                     }

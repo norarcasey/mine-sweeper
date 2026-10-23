@@ -15,6 +15,10 @@ final class GameModel {
     /// Counts flags placed and removed, so a haptic fires on each. A win that
     /// flags every mine is not a toggle and does not count.
     private(set) var flagToggles = 0
+    /// The Flag toggle above the board. While it is on, a tap on a hidden cell
+    /// flags it instead of revealing it, so flagging never trips a mine. Every
+    /// game starts with it off.
+    var isFlagMode = false
 
     /// When set, each game's first reveal places mines from this seed, so a
     /// UI test knows where they are. Nil in normal play.
@@ -30,6 +34,7 @@ final class GameModel {
         set {
             guard newValue != game.difficulty else { return }
             game = Game(difficulty: newValue)
+            isFlagMode = false
             clearClock()
         }
     }
@@ -42,7 +47,17 @@ final class GameModel {
 
     // MARK: - Moves
 
-    /// A tap: reveals a hidden cell, or chords a revealed number.
+    /// A tap: reveals a hidden cell, or chords a revealed number. In flag
+    /// mode it flags a hidden cell instead, and still chords a number.
+    func tap(row: Int, column: Int) {
+        guard isFlagMode else {
+            reveal(row: row, column: column)
+            return
+        }
+        longPress(row: row, column: column)
+    }
+
+    /// Reveals a hidden cell, or chords a revealed number.
     func reveal(row: Int, column: Int) {
         let before = game.state
         if let seed {
@@ -77,6 +92,7 @@ final class GameModel {
     /// The face button: a fresh board of the same difficulty.
     func newGame() {
         game.reset()
+        isFlagMode = false
         clearClock()
     }
 

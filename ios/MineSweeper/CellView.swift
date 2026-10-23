@@ -1,7 +1,8 @@
 import MineSweeperKit
 import SwiftUI
 
-/// One cell. Tap reveals (or chords a number); long-press flags (or chords).
+/// One cell. Tap reveals (or chords a number, or flags in flag mode);
+/// long-press flags (or chords).
 struct CellView: View {
     let row: Int
     let column: Int

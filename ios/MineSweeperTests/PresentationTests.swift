@@ -141,6 +141,62 @@ struct GameModelTests {
         #expect(model.flagToggles == 2)
     }
 
+    @Test func aTapRevealsUntilFlagModeIsOn() throws {
+        let model = GameModel(difficulty: .beginner, seed: 7)
+        #expect(!model.isFlagMode)
+        model.tap(row: 4, column: 4)
+        #expect(model.game.state == .active)
+
+        // In flag mode a tap on a mine flags it, and the game goes on.
+        model.isFlagMode = true
+        let mine = try #require(model.game.mineIDs.first)
+        model.tap(row: mine / 9, column: mine % 9)
+        #expect(model.game.isFlagged(row: mine / 9, column: mine % 9))
+        #expect(model.game.state == .active)
+        #expect(model.flagToggles == 1)
+        model.tap(row: mine / 9, column: mine % 9)
+        #expect(!model.game.isFlagged(row: mine / 9, column: mine % 9))
+    }
+
+    @Test func aTapOnANumberStillChordsInFlagMode() throws {
+        let model = GameModel(difficulty: .beginner, seed: 7)
+        model.tap(row: 4, column: 4)
+        model.isFlagMode = true
+
+        // A revealed number with exactly one mine around it.
+        let game = model.game
+        let neighbours = { (row: Int, column: Int) in
+            (-1...1).flatMap { dr in (-1...1).map { dc in (row + dr, column + dc) } }
+                .filter { $0 != (row, column) && (0..<9).contains($0.0) && (0..<9).contains($0.1) }
+        }
+        let number = try #require(
+            (0..<81).map { ($0 / 9, $0 % 9) }.first { row, column in
+                game.appearance(row: row, column: column) == .revealed(count: 1)
+                    && neighbours(row, column).contains { game.appearance(row: $0.0, column: $0.1) == .hidden }
+            }
+        )
+        let mine = try #require(
+            neighbours(number.0, number.1).first { game.board[$0.0][$0.1].isMine }
+        )
+        model.tap(row: mine.0, column: mine.1)
+        model.tap(row: number.0, column: number.1)
+
+        for (row, column) in neighbours(number.0, number.1) where (row, column) != mine {
+            #expect(model.game.appearance(row: row, column: column) != .hidden)
+        }
+        #expect(model.game.state != .lost)
+    }
+
+    @Test func everyGameStartsWithFlagModeOff() {
+        let model = GameModel(difficulty: .beginner)
+        model.isFlagMode = true
+        model.newGame()
+        #expect(!model.isFlagMode)
+        model.isFlagMode = true
+        model.difficulty = .intermediate
+        #expect(!model.isFlagMode)
+    }
+
     @Test func changingDifficultyStartsAFreshBoardAndClock() {
         let model = GameModel(difficulty: .beginner, seed: 7)
         model.reveal(row: 4, column: 4)
