@@ -54,21 +54,20 @@ struct CellView: View {
         }
     }
 
+    /// A raised grey tile until it opens; then flat, with a thin line on its
+    /// top and left edges as the classic board draws it.
     @ViewBuilder
     private var background: some View {
-        let inset = max(0.5, size * 0.04)
-        if appearance == .exploded {
-            Rectangle().fill(Color.red)
-        } else if isOpen {
+        if isOpen {
             Rectangle()
-                .fill(Palette.open)
-                .overlay(Rectangle().stroke(Palette.grid, lineWidth: 0.5))
+                .fill(appearance == .exploded ? Palette.exploded : Palette.open)
+                .overlay(alignment: .topLeading) {
+                    BevelEdge(width: max(0.5, size * 0.03), topLeft: true).fill(Palette.grid)
+                }
         } else {
             Rectangle()
-                .fill(Palette.tile)
-                .overlay(Rectangle().stroke(Palette.grid, lineWidth: 0.5))
-                .padding(inset)
-                .background(Palette.open)
+                .fill(Palette.panel)
+                .bevel(max(1.5, size * 0.1))
         }
     }
 
@@ -78,12 +77,11 @@ struct CellView: View {
         case .hidden:
             EmptyView()
         case .flagged:
-            Image(systemName: "flag.fill")
-                .font(.system(size: size * 0.5))
-                .foregroundStyle(Palette.flag)
+            FlagView()
+                .padding(size * 0.12)
         case .exploded, .mine:
-            Text(verbatim: "💣")
-                .font(.system(size: size * 0.55))
+            MineView()
+                .padding(size * 0.1)
         case let .revealed(count) where count > 0:
             Text(verbatim: "\(count)")
                 .font(.system(size: size * 0.6, weight: .heavy, design: .rounded))

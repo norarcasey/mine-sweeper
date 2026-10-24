@@ -11,13 +11,18 @@ struct BoardView: View {
     @GestureState private var pinch: CGFloat = 1
 
     private static let zoomRange: ClosedRange<CGFloat> = 1...3
+    /// The sunken frame around the grid, taken from the space the cells fit.
+    private static let frame: CGFloat = 3
 
     var body: some View {
         GeometryReader { proxy in
             let layout = BoardLayout(
                 rows: model.game.rows,
                 columns: model.game.columns,
-                available: proxy.size,
+                available: CGSize(
+                    width: max(0, proxy.size.width - 2 * Self.frame),
+                    height: max(0, proxy.size.height - 2 * Self.frame)
+                ),
                 zoom: clamped(zoom * pinch)
             )
             ScrollView([.horizontal, .vertical]) {
@@ -57,7 +62,8 @@ struct BoardView: View {
                 }
             }
         }
-        .overlay(Rectangle().stroke(Palette.grid, lineWidth: 1))
+        .padding(Self.frame)
+        .bevel(Self.frame, raised: false)
     }
 
     private func clamped(_ value: CGFloat) -> CGFloat {

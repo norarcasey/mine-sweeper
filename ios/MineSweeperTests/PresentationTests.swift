@@ -285,3 +285,27 @@ struct GameModelTests {
         #expect(model.startedAt == nil)
     }
 }
+
+@Suite("The seven-segment counters (presentation only, no TS counterpart)")
+struct SevenSegmentTests {
+    @Test func lightsEachDigitsSegments() {
+        #expect(segments(for: "1") == [.b, .c])
+        #expect(segments(for: "7") == [.a, .b, .c])
+        #expect(segments(for: "8") == Set(Segment.allCases))
+        #expect(segments(for: "0") == Set(Segment.allCases).subtracting([.g]))
+    }
+
+    @Test func givesEveryDigitADifferentShape() {
+        let shapes = "0123456789".map { segments(for: $0) }
+        #expect(Set(shapes).count == 10)
+    }
+
+    @Test func drawsTheMinusOfAnOverFlaggedCounter() {
+        #expect(segments(for: "-") == [.g])
+    }
+
+    @Test func lightsNothingForAnythingElse() {
+        #expect(segments(for: ":").isEmpty)
+        #expect(segments(for: " ").isEmpty)
+    }
+}

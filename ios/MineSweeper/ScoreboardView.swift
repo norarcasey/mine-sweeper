@@ -11,30 +11,31 @@ struct ScoreboardView: View {
     var body: some View {
         let layout = axis == .horizontal ? AnyLayout(HStackLayout()) : AnyLayout(VStackLayout(spacing: 12))
         layout {
-            LEDText(formatCounter(model.game.minesRemaining))
+            SevenSegmentView(text: formatCounter(model.game.minesRemaining))
                 .accessibilityElement()
                 .accessibilityLabel("Mines remaining: \(model.game.minesRemaining)")
                 .accessibilityIdentifier("mines-remaining")
             spacer
             Button(action: model.newGame) {
-                Text(verbatim: face)
-                    .font(.system(size: 34))
-                    .frame(width: 52, height: 52)
-                    .background(Palette.tile, in: RoundedRectangle(cornerRadius: 10))
+                FaceView(state: model.game.state)
+                    .frame(width: 34, height: 34)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(FaceButtonStyle())
             .accessibilityLabel("New game")
             .accessibilityValue(outcome(model.game.state))
             .accessibilityIdentifier("new-game")
             spacer
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 let seconds = model.elapsedSeconds(at: context.date)
-                LEDText(formatTimer(seconds: seconds))
+                SevenSegmentView(text: formatTimer(seconds: seconds))
                     .accessibilityElement()
                     .accessibilityLabel(timerLabel(seconds: seconds))
                     .accessibilityIdentifier("timer")
             }
         }
+        .padding(10)
+        .background(Palette.panel)
+        .bevel(3, raised: false)
     }
 
     /// Spreads the row across the width; a column stays packed.
@@ -43,31 +44,16 @@ struct ScoreboardView: View {
             Spacer()
         }
     }
-
-    /// The component's smile, frown and heart-eyes.
-    private var face: String {
-        switch model.game.state {
-        case .lost: "🙁"
-        case .won: "😍"
-        case .inactive, .active: "🙂"
-        }
-    }
 }
 
-/// Red digits on black, like the classic game's counters.
-private struct LEDText: View {
-    let text: String
-
-    init(_ text: String) {
-        self.text = text
-    }
-
-    var body: some View {
-        Text(verbatim: text)
-            .font(.system(size: 26, weight: .bold, design: .monospaced))
-            .foregroundStyle(Color.red)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .background(Color.black, in: RoundedRectangle(cornerRadius: 6))
+/// The face's square button: raised, and sunken while pressed.
+private struct FaceButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .offset(x: configuration.isPressed ? 1 : 0, y: configuration.isPressed ? 1 : 0)
+            .frame(width: 48, height: 48)
+            .background(Palette.panel)
+            .bevel(3, raised: !configuration.isPressed)
+            .overlay(Rectangle().stroke(Palette.grid, lineWidth: 1))
     }
 }

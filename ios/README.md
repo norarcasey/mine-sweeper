@@ -46,6 +46,20 @@ destination in Xcode and press Run.
   2 adjacent mines"), activates to reveal, and has a Flag/Unflag action. The game announces
   "You won!" or "You lost!".
 
+### The look
+
+The classic look, as the component has it (`src/MineSweeper.css`): raised `#bdbdbd` tiles,
+flat open cells with a thin line on their top and left edges, sunken wells around the board and
+the scoreboard, red seven-segment counters and a face button. **Every piece is drawn in
+SwiftUI** (`ClassicShapes.swift`, `SevenSegmentView.swift`), and none is copied or traced from
+another game's art. The segments are drawn, not set in a font, so there is no font licence to
+carry. The face mirrors the component's emoji: a smile while playing, a frown on a loss and
+heart eyes on a win. Nothing is an emoji, so App Store guideline 5.2.5 doesn't apply (MINE-18).
+
+The classic palette has no dark mode, so `Palette` keeps the same shapes in dark greys, with
+the raised tile a step lighter than the open cell. The number colours are the classic ones,
+darkened where needed to keep 3:1 on the grey (MINE-19).
+
 ### Expert on a phone
 
 Expert is 16 rows × 30 columns. When the board is wider than tall and the screen is taller than

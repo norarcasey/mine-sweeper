@@ -30,7 +30,7 @@ struct ContentView: View {
         }
         // On its side the safe area already holds the content 59pt off each end.
         .padding(placement.isBeside ? .vertical : .all)
-        .background(Palette.open.opacity(0.5).ignoresSafeArea())
+        .background(Palette.window.ignoresSafeArea())
         .background(InterfaceOrientationReader { orientation = $0 })
         .onAppear { model.difficulty = difficulty.wrappedValue }
         // Looking away (another app, the app switcher, Control Center, the lock

@@ -11,7 +11,7 @@ struct PausedView: View {
             VStack(spacing: 12) {
                 Image(systemName: "pause.circle.fill")
                     .font(.system(size: 56))
-                    .foregroundStyle(Palette.grid)
+                    .foregroundStyle(Palette.shadow)
                 Text("Paused")
                     .font(.title.bold())
                 Text("Tap to resume")
@@ -19,7 +19,8 @@ struct PausedView: View {
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Palette.open, in: RoundedRectangle(cornerRadius: 12))
+            .background(Palette.panel)
+            .bevel(3)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
