@@ -4,7 +4,8 @@
 #   ios/test.sh gate   MineSweeperKit's swift test, then the app's unit tests.
 #                      What CI's macOS job runs.
 #   ios/test.sh all    The gate, then the UI tests (a win and a loss on a seeded
-#                      board). What `yarn verify` runs. The UI tests stay out of
+#                      board), less the store screenshots, which check nothing
+#                      (ios/screenshots.sh). What `yarn verify` runs. The UI tests stay out of
 #                      CI: they are the slow suite, and macOS minutes cost ten
 #                      times Linux ones (the ci skill, LIN-20).
 set -euo pipefail
@@ -29,7 +30,7 @@ sys.exit("no iPhone simulator is available")
 
 case "$mode" in
   gate) only=(-only-testing:MineSweeperTests) ;;
-  all) only=() ;;
+  all) only=(-skip-testing:MineSweeperUITests/StoreScreenshots) ;;
   *) echo "usage: ios/test.sh gate|all" >&2; exit 2 ;;
 esac
 

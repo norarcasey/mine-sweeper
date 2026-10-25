@@ -9,10 +9,13 @@ ios/
   MineSweeper.xcodeproj   the app, its unit tests and its UI tests (scheme MineSweeper)
   MineSweeper/            the app
   MineSweeperTests/       unit tests: counter, timer, VoiceOver labels, layout, the model
-  MineSweeperUITests/     a win and a loss on a seeded board
+  MineSweeperUITests/     a win and a loss on a seeded board, and the store screenshots
   MineSweeperKit/         the rules, a Swift package (its own README)
+  AppStore/               the App Store listing, privacy policy and support page
   scripts/render-icon.swift  draws the app icon
   test.sh                 gate | all
+  screenshots.sh          the App Store screenshots
+  testflight.sh           export | upload
 ```
 
 Open `ios/MineSweeper.xcodeproj` in Xcode 26 and run the **MineSweeper** scheme. The project
@@ -98,6 +101,19 @@ ios/test.sh all    # and the UI tests (what `yarn verify` runs)
 The UI tests launch the app with `-seed 7`. A Debug build lays every game's mines from that
 seed with the Kit's `SeededGenerator`. The test replays the same `Game` with the same seed, so
 it knows where the mines are without the app telling it.
+
+## The App Store
+
+`AppStore/` holds the listing (every App Store Connect field, in its `README.md`), the privacy
+policy and the support page. `MineSweeper/PrivacyInfo.xcprivacy` is the privacy manifest: it
+tracks nothing and collects nothing, and gives a reason (CA92.1) for the app's one use of
+`UserDefaults`, which keeps the difficulty.
+
+```bash
+ios/screenshots.sh   # the 6.9" screenshots, from seeded games, into ios/build/screenshots/
+```
+
+It runs the `StoreScreenshots` UI tests, which `test.sh` skips because they check nothing.
 
 ## The icon
 

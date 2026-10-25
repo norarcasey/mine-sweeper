@@ -163,6 +163,12 @@ protection was left as it is because changing it is an access change.
         leaves the `.ipa` in `ios/build/export/`.
      2. Wait for App Store Connect to finish processing (TestFlight › iOS builds). Internal
         testers on the team get it in the TestFlight app, and no review is needed.
+     3. **For the App Store** (a second Shipit, since it goes to Apple's review): on the
+        version page, pick the build and check the listing against `ios/AppStore/README.md`,
+        which holds every field. The privacy policy and support pages are in `ios/AppStore/`.
+        `ios/screenshots.sh` makes the 6.9" screenshots from seeded games. Then **Add for
+        Review** › **Submit**. The version is set to release manually, so approval waits for
+        Nora to press Release.
      - **Signing is automatic** (decided in MINE-4). It runs through the Apple ID Xcode
        is signed in with (Xcode › Settings › Accounts), and `-allowProvisioningUpdates`
        fetches the profiles and the cloud-managed Apple Distribution certificate. There is
