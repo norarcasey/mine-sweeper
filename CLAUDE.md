@@ -125,7 +125,7 @@ worktree for the ticket already exists, enter it by path rather than making a se
 
 ## Ship it
 
-The four steps from `~/src/linora/docs/ship-it.md`, with this repo's commands.
+The five steps from `~/src/linora/docs/ship-it.md`, with this repo's commands.
 
 **Rebase onto main, with no pull request** (decided in MINE-1, 19 Oct 2026). PRs #1–#19 came
 from before Linora. Now the repo ends a ticket the way every other repo does. `main` still has
@@ -185,5 +185,9 @@ protection was left as it is because changing it is an access change.
        record, the export fails with "Error Downloading App Information", because App
        Store Connect returns no app for the bundle id. Export compliance is answered in
        the project (`ITSAppUsesNonExemptEncryption = NO`), so uploads don't stop to ask.
-
-The repo has no project hooks, so no main-checkout fast-forward is needed.
+5. **Fast-forward the main checkout**, after whichever deploy ran. Leave the worktree
+   (`ExitWorktree`, `keep`) and run `git pull --ff-only` in the main checkout, changing nothing
+   else there. A pull that will not fast-forward means the main checkout has work of its own:
+   stop and tell Nora.
+   There are no project hooks here, so nothing breaks without it, but the folder Nora opens
+   goes stale: on 25 Oct 2026 this one was 1 behind (`LIN/LIN-81`).
