@@ -78,8 +78,7 @@ struct ContentView: View {
     }
 
     private func controls(beside: Bool) -> some View {
-        @Bindable var model = model
-        return VStack(spacing: 16) {
+        VStack(spacing: 16) {
             Group {
                 if beside {
                     picker.pickerStyle(.menu)
@@ -89,19 +88,62 @@ struct ContentView: View {
             }
             .accessibilityIdentifier("difficulty")
 
-            // When on, a tap flags instead of revealing. Every game starts with it off.
-            Toggle(isOn: $model.isFlagMode) {
-                Label("Flag", systemImage: "flag.fill")
-                    .frame(maxWidth: .infinity)
-            }
-            .toggleStyle(.button)
-            .tint(Palette.flag)
-            .accessibilityHint("When on, tapping a cell flags it instead of revealing it")
-            .accessibilityIdentifier("flag-mode")
-
             ScoreboardView(model: model, axis: beside ? .vertical : .horizontal)
+
+            // Under the scoreboard, Flag under the clock and away from the face, so
+            // reaching for it never starts a new game. Beside the board the two are
+            // icons, to keep the column narrow.
+            HStack(spacing: 8) {
+                pauseButton
+                flagToggle
+            }
+            .labelStyle(ControlLabelStyle(iconOnly: beside))
         }
     }
+
+    /// When on, a tap flags instead of revealing. Every game starts with it off.
+    /// Outlined like Pause while off, and filled while on, so its state shows at
+    /// a glance.
+    @ViewBuilder private var flagToggle: some View {
+        @Bindable var model = model
+        let toggle = Toggle(isOn: $model.isFlagMode) {
+            Label("Flag", systemImage: "flag.fill")
+                .frame(maxWidth: .infinity)
+        }
+        .toggleStyle(.button)
+        .tint(Palette.flag)
+        .accessibilityLabel("Flag")
+        .accessibilityHint("When on, tapping a cell flags it instead of revealing it")
+        .accessibilityIdentifier("flag-mode")
+
+        if model.isFlagMode {
+            toggle.buttonStyle(.borderedProminent)
+        } else {
+            toggle.buttonStyle(.bordered)
+        }
+    }
+
+    /// Pauses a game under way, as looking away does, and resumes it. Before the
+    /// first reveal and after the end there is no clock to hold.
+    private var pauseButton: some View {
+        Button {
+            if model.isPaused {
+                model.resume()
+            } else {
+                model.pause()
+            }
+        } label: {
+            Label(pauseTitle, systemImage: model.isPaused ? "play.fill" : "pause.fill")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .tint(Palette.ink)
+        .disabled(model.game.state != .active)
+        .accessibilityLabel(pauseTitle)
+        .accessibilityIdentifier("pause")
+    }
+
+    private var pauseTitle: String { model.isPaused ? "Resume" : "Pause" }
 
     private var picker: some View {
         Picker("Difficulty", selection: difficulty) {
@@ -120,6 +162,22 @@ struct ContentView: View {
                 model.difficulty = newValue
             }
         )
+    }
+}
+
+/// A control's icon and title, or the icon alone in the narrow column beside
+/// the board. Each control sets its VoiceOver label itself, so dropping the
+/// title loses nothing.
+private struct ControlLabelStyle: LabelStyle {
+    let iconOnly: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) {
+            configuration.icon
+            if !iconOnly {
+                configuration.title
+            }
+        }
     }
 }
 

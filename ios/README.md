@@ -31,7 +31,8 @@ destination in Xcode and press Run.
   other neighbours open.
 - **Long-press** flags or unflags. A long-press on a revealed number chords, as a right-click
   does in the component.
-- The **Flag** toggle under the picker makes a tap flag or unflag a hidden cell instead of
+- The **Flag** toggle, under the clock and clear of the face so reaching for it never starts a
+  new game, makes a tap flag or unflag a hidden cell instead of
   revealing it, so flagging a mine never trips it. A tap on a revealed number still chords, and
   a long-press still flags. Every game starts with Flag off, from the face or the picker. It is
   there because a long-press cut short is a tap, and a tap on the mine being flagged ends the
@@ -40,7 +41,8 @@ destination in Xcode and press Run.
   the choice is kept between launches.
 - **Pausing:** leaving the app mid-game (another app, the app switcher, Control Center, the
   lock button) holds the clock and covers the board with a **Paused** screen, which stays
-  until it is tapped. Only a game under way pauses. The component has no equivalent.
+  until it is tapped. The **Pause** button, on Flag's left, does the same by hand, and turns
+  into **Resume** while paused. Only a game under way pauses. The component has no equivalent.
 - **Haptics:** a tap on each flag, an error on a loss, a success on a win.
 - **VoiceOver:** each cell reads as the component's `aria-label` does ("Row 3, column 5,
   2 adjacent mines"), activates to reveal, and has a Flag/Unflag action. The game announces
@@ -71,13 +73,13 @@ picture differs, which `CLAUDE.md` allows. In landscape, Expert is drawn as it i
 
 ### On its side
 
-Upright, the picker, the Flag toggle and the scoreboard sit above the board. Turned on its side,
+Upright, the picker, the scoreboard, and Pause and Flag sharing a row sit above the board. Turned on its side,
 the phone keeps them on the edge that was its top, as a column beside the board with the text
 upright: on the left when the phone is turned anticlockwise, on the right when clockwise. The
 board then has the whole height, and every board that is not turned fits whole, both ways, so
 landscape shows all of it without scrolling. The column is kept narrow so the board gets the
 width: the picker is a menu showing the one difficulty chosen, the scoreboard stacks the
-counter, the face and the clock, and the safe area's 59pt at each end stands in for the padding.
+counter, the face and the clock, Pause and Flag are icons alone, and the safe area's 59pt at each end stands in for the padding.
 For Expert that means cells of about 21pt on a 6.3" phone, where a column as wide as the
 segmented picker left 13pt (MINE-15); a pinch zooms them as it does upright. The size classes say the phone is on its side but
 not which way, so `InterfaceOrientationReader` watches the window scene's orientation.

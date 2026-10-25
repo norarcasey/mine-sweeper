@@ -140,6 +140,34 @@ final class GameUITests: XCTestCase {
         XCTAssertTrue(cell(Self.opener.row, Self.opener.column).exists)
     }
 
+    /// Upright, Flag is under the clock and away from the face, with Pause
+    /// beside it. Pause works only once a game is under way, and a second tap
+    /// resumes.
+    func testThePauseButtonPausesTheGame() {
+        let pause = app.buttons["pause"]
+        let flagMode = app.descendants(matching: .any)["flag-mode"]
+        let timer = app.descendants(matching: .any)["timer"]
+        XCTAssertTrue(pause.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(flagMode.frame.minY, timer.frame.maxY, "Flag is under the clock")
+        // Flag's half starts at the middle, which the face straddles, so it is
+        // Flag's centre that is clear of the face, a row below it.
+        XCTAssertGreaterThan(flagMode.frame.midX, app.buttons["new-game"].frame.maxX, "Flag is clear of the face")
+        XCTAssertLessThan(pause.frame.maxX, flagMode.frame.minX, "Pause is on Flag's left")
+        XCTAssertFalse(pause.isEnabled, "nothing to pause before the first reveal")
+
+        tap(Self.opener.row, Self.opener.column)
+        XCTAssertTrue(pause.isEnabled)
+        pause.tap()
+        let paused = app.descendants(matching: .any)["paused"]
+        XCTAssertTrue(paused.waitForExistence(timeout: 5))
+        XCTAssertEqual(pause.label, "Resume")
+
+        pause.tap()
+        XCTAssertTrue(paused.waitForNonExistence(timeout: 5))
+        XCTAssertEqual(pause.label, "Pause")
+        XCTAssertTrue(cell(Self.opener.row, Self.opener.column).exists)
+    }
+
     func testFlagModeFlagsATappedMine() throws {
         let game = replay()
         tap(Self.opener.row, Self.opener.column)
