@@ -115,6 +115,13 @@ ios/screenshots.sh   # the 6.3" screenshots, from seeded games, into ios/build/s
 
 It runs the `StoreScreenshots` UI tests, which `test.sh` skips because they check nothing.
 
+The product page's header (the "Header and Search Results" tab) is drawn, not captured:
+
+```bash
+mkdir -p ios/build/header
+swift ios/scripts/render-header.swift 5244 2950 ios/build/header/header-5244x2950.png
+```
+
 ## The icon
 
 ```bash
