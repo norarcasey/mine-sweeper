@@ -1,4 +1,4 @@
-// Draws the app icon: a mine on a 3×3 patch of board, with a flag and a "1".
+// Draws the app icon: NORA spelled on the board, as N, a mine, a flag and 4.
 //
 //   swift ios/scripts/render-icon.swift ios/MineSweeper/Assets.xcassets/AppIcon.appiconset/AppIcon.png
 //
@@ -34,10 +34,12 @@ else { fatalError("no bitmap context") }
 context.setFillColor(color(0x1F2530))
 context.fill(CGRect(x: 0, y: 0, width: size, height: size))
 
-// A 3×3 patch of tiles. Row 0 is the bottom in Core Graphics.
+// NORA on a 2×2 patch of board, read left to right, top to bottom: an N, a mine
+// for the O, a flag for the R and a 4 for the A. Row 0 is the bottom in Core
+// Graphics.
 let margin: CGFloat = 112
-let tile = (CGFloat(size) - margin * 2) / 3
-let gap: CGFloat = 14
+let tile = (CGFloat(size) - margin * 2) / 2
+let gap: CGFloat = 24
 
 func cellRect(_ row: Int, _ column: Int) -> CGRect {
     CGRect(
@@ -48,19 +50,35 @@ func cellRect(_ row: Int, _ column: Int) -> CGRect {
     )
 }
 
-for row in 0..<3 {
-    for column in 0..<3 {
+let flagCell = cellRect(0, 0)
+for row in 0..<2 {
+    for column in 0..<2 {
         let rect = cellRect(row, column)
-        let open = (row, column) == (1, 1) || (row, column) == (0, 0)
-        context.setFillColor(color(open ? 0xE8ECF1 : 0x7A8699))
-        context.addPath(CGPath(roundedRect: rect, cornerWidth: 28, cornerHeight: 28, transform: nil))
+        // A flag sits on a hidden tile; the letters are open ones.
+        context.setFillColor(color(rect == flagCell ? 0x7A8699 : 0xE8ECF1))
+        context.addPath(CGPath(roundedRect: rect, cornerWidth: 40, cornerHeight: 40, transform: nil))
         context.fillPath()
     }
 }
 
-// The mine, in the centre cell.
-let centre = CGPoint(x: cellRect(1, 1).midX, y: cellRect(1, 1).midY)
-let radius = tile * 0.24
+// The N and the 4, in number colours: blue and navy.
+func draw(_ text: String, _ hex: UInt32, in cell: CGRect) {
+    let string = NSAttributedString(string: text, attributes: [
+        .font: NSFont.systemFont(ofSize: tile * 0.6, weight: .heavy),
+        .foregroundColor: NSColor(cgColor: color(hex)) ?? NSColor.black,
+    ])
+    let line = CTLineCreateWithAttributedString(string)
+    let bounds = CTLineGetBoundsWithOptions(line, .useGlyphPathBounds)
+    context.textPosition = CGPoint(x: cell.midX - bounds.midX, y: cell.midY - bounds.midY)
+    CTLineDraw(line, context)
+}
+draw("N", 0x1D4ED8, in: cellRect(1, 0))
+draw("4", 0x1E1B8F, in: cellRect(0, 1))
+
+// The mine, for the O.
+let mineCell = cellRect(1, 1)
+let centre = CGPoint(x: mineCell.midX, y: mineCell.midY)
+let radius = tile * 0.2
 context.setStrokeColor(color(0x111111))
 context.setLineWidth(radius * 0.32)
 context.setLineCap(.round)
@@ -76,30 +94,22 @@ context.setFillColor(color(0xFFFFFF))
 let shine = radius * 0.32
 context.fillEllipse(in: CGRect(x: centre.x - radius * 0.55, y: centre.y + radius * 0.15, width: shine, height: shine))
 
-// A flag, top right.
-let flagCell = cellRect(2, 2)
-let pole = CGRect(x: flagCell.midX - 8, y: flagCell.minY + flagCell.height * 0.2, width: 16, height: flagCell.height * 0.6)
+// The flag, for the R: the pennant points right off the top of the pole, as an
+// R's bowl comes off its stem. Pole and pennant together sit centred.
+let pennant = flagCell.width * 0.42
+let pole = CGRect(
+    x: flagCell.midX - (22 + pennant) / 2, y: flagCell.minY + flagCell.height * 0.2,
+    width: 22, height: flagCell.height * 0.6
+)
 context.setFillColor(color(0x111111))
 context.fill(pole)
-context.fill(CGRect(x: flagCell.midX - 50, y: pole.minY - 4, width: 100, height: 22))
+context.fill(CGRect(x: pole.midX - 50, y: pole.minY - 6, width: 100, height: 32))
 context.setFillColor(color(0xE03131))
-context.move(to: CGPoint(x: pole.maxX, y: pole.maxY))
-context.addLine(to: CGPoint(x: pole.maxX, y: pole.maxY - flagCell.height * 0.32))
-context.addLine(to: CGPoint(x: pole.maxX - flagCell.width * 0.42, y: pole.maxY - flagCell.height * 0.16))
+context.move(to: CGPoint(x: pole.minX, y: pole.maxY))
+context.addLine(to: CGPoint(x: pole.minX, y: pole.maxY - flagCell.height * 0.32))
+context.addLine(to: CGPoint(x: pole.minX + pennant + 22, y: pole.maxY - flagCell.height * 0.16))
 context.closePath()
 context.fillPath()
-
-// A blue "1", bottom left.
-let oneCell = cellRect(0, 0)
-let font = NSFont.systemFont(ofSize: tile * 0.62, weight: .heavy)
-let one = NSAttributedString(string: "1", attributes: [
-    .font: font,
-    .foregroundColor: NSColor(cgColor: color(0x1D4ED8)) ?? NSColor.blue,
-])
-let line = CTLineCreateWithAttributedString(one)
-let bounds = CTLineGetBoundsWithOptions(line, .useGlyphPathBounds)
-context.textPosition = CGPoint(x: oneCell.midX - bounds.midX, y: oneCell.midY - bounds.midY)
-CTLineDraw(line, context)
 
 guard
     let image = context.makeImage(),
