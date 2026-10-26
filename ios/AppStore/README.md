@@ -83,12 +83,66 @@ No ads, no purchases, no accounts, no tracking. It works offline and collects no
 | Sign-in required | No                                           |
 | Contact          | Nora Casey (phone and email: Nora's, in ASC) |
 
-Notes:
+Notes, which also answer App Review's 2.1 questions (see [Review history](#review-history)):
 
 ```
-A single-player Minesweeper game. No account, no network, no purchases.
+Nora's Mine Sweeper is a single-player Minesweeper game for iPhone. No account, no sign-in, no network, no purchases, no ads.
 
-To play: tap a square to open it (the first tap is always safe). Long-press a square, or turn on the Flag button under the clock and tap, to flag a mine. Tap a revealed number whose flags match it to open its neighbours. The face starts a new game; the picker at the top changes the difficulty.
+1. SCREEN RECORDING
+Attached to our reply in App Store Connect: recorded on an iPhone running the latest iOS, starting from launching the app. It shows a Beginner game won by opening squares, flagging with long-press and with the Flag switch, chording, a loss, a new game from the face, changing the difficulty, and Expert on its side with pinch to zoom. The app has no account, no user-generated content and no paid content, so the recording has none of those to show.
 
-On Expert, a phone held upright shows the board turned on its side (30 rows of 16) so the squares stay large enough to tap; pinch to zoom. All artwork, including the counters and the face, is drawn in SwiftUI for this app.
+2. PURPOSE AND AUDIENCE
+A classic logic puzzle for anyone who likes Minesweeper and wants to play it on a phone. It is built for touch: a Flag switch so flagging never sets off a mine, an Expert board that turns to fit an upright phone, chording, full VoiceOver support and haptics. Its value is a quick, calm, offline puzzle with no ads or tracking. Rated 4+.
+
+3. HOW TO USE IT
+Nothing to set up and no login. Launch the app and a Beginner game is ready.
+- Tap a square to open it. The first tap is always safe.
+- Long-press a square to flag it, or turn on the Flag button under the clock so a tap flags instead.
+- Tap a revealed number whose flags match it to open its other neighbours.
+- Win by opening every safe square, or by flagging exactly the mines. Opening a mine loses.
+- The face starts a new game. The picker at the top changes the difficulty (Beginner 9x9, Intermediate 16x16, Expert 16x30). Pause stops the clock.
+- On Expert, a phone held upright shows the board turned on its side so the squares stay large enough to tap; pinch to zoom.
+
+4. EXTERNAL SERVICES
+None. The app makes no network requests and uses no third-party SDKs, data providers, authentication, payment or AI services. It uses only Apple's frameworks (SwiftUI, UIKit). The one thing it stores is the chosen difficulty, on the device.
+
+5. REGIONAL DIFFERENCES
+None. The app works the same in every region and is in English only.
+
+6. REGULATED INDUSTRY / THIRD-PARTY MATERIAL
+Not applicable. It is not in a regulated industry and contains no third-party material: all artwork, including the squares, counters, face and icon, is drawn in SwiftUI for this app. Minesweeper is a generic game genre; the app uses no other company's names, art or code.
 ```
+
+## Review history
+
+### 1.0 (116): Guideline 2.1, Information Needed (25 Oct 2026, MINE-21)
+
+Not a rejection of the app. The first submission from a developer account with "a limited App
+Review history" gets a request for more information. App Review asked for a reply in App Store
+Connect, also pasted into **App Review Information › Notes** for later submissions, with:
+
+1. a screen recording on a physical device running the latest iOS, starting at launch and showing
+   the typical flow, plus any account, user-generated or paid content (the app has none);
+2. the app's purpose and target audience;
+3. how to set up and reach its main features, with any login;
+4. the external services it uses;
+5. any regional differences;
+6. documentation for a regulated industry or third-party material.
+
+Items 2–6 are the Notes above. Item 1 is made on Nora's phone with the TestFlight build of the
+submitted version, so it shows exactly what was reviewed:
+
+1. Update the phone to the latest iOS (Settings › General › Software Update).
+2. Delete the app, then install the submitted build from TestFlight, so the recording starts from
+   a fresh install on Beginner.
+3. Start a screen recording from Control Center, then go to the Home Screen and launch the app.
+4. Play one Beginner game to a win: open squares, long-press to flag, turn on **Flag** and tap to
+   flag, and tap a satisfied number to chord.
+5. Tap the face for a new game and open a mine, to show a loss.
+6. Pick **Expert** in the picker: the board turns on its side. Pinch to zoom, then tap
+   **Pause** and **Resume**.
+7. Stop the recording. It lands in Photos; trim it there if it runs long.
+
+Then, in App Store Connect: paste the Notes into App Review Information, reply in App Review
+(the Resolution Center) with the same text and the recording attached, and resubmit. The build
+does not change, so nothing is uploaded.
