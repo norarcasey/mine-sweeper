@@ -110,7 +110,7 @@ tracks nothing and collects nothing, and gives a reason (CA92.1) for the app's o
 `UserDefaults`, which keeps the difficulty.
 
 ```bash
-ios/screenshots.sh   # the 6.9" screenshots, from seeded games, into ios/build/screenshots/
+ios/screenshots.sh   # the 6.3" screenshots, from seeded games, into ios/build/screenshots/
 ```
 
 It runs the `StoreScreenshots` UI tests, which `test.sh` skips because they check nothing.

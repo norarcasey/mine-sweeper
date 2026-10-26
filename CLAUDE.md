@@ -166,7 +166,7 @@ protection was left as it is because changing it is an access change.
      3. **For the App Store** (a second Shipit, since it goes to Apple's review): on the
         version page, pick the build and check the listing against `ios/AppStore/README.md`,
         which holds every field. The privacy policy and support pages are in `ios/AppStore/`.
-        `ios/screenshots.sh` makes the 6.9" screenshots from seeded games. Then **Add for
+        `ios/screenshots.sh` makes the 6.3" screenshots from seeded games. Then **Add for
         Review** › **Submit**. The version is set to release manually, so approval waits for
         Nora to press Release.
      - **Signing is automatic** (decided in MINE-4). It runs through the Apple ID Xcode

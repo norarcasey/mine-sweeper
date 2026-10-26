@@ -28,7 +28,7 @@ changes there, change it here too.
 | Support URL      | https://github.com/norarcasey/mine-sweeper/blob/main/ios/AppStore/support.md |
 | Marketing URL    | none                                                                         |
 | Copyright        | 2026 Nora Casey                                                              |
-| Screenshots      | 6.9" iPhone, 1320 × 2868: `1-beginner` … `5-landscape`, in that order        |
+| Screenshots      | iPhone 6.3", 1206 × 2622: `1-beginner` … `5-landscape`, in that order        |
 | Release          | Manually release this version                                                |
 | Sign-in required | No                                                                           |
 

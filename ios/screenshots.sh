@@ -2,15 +2,17 @@
 # The App Store screenshots (MINE-5), from the simulator.
 #
 #   ios/screenshots.sh   Runs the StoreScreenshots UI tests on an iPhone 17 Pro
-#                        Max, the 6.9" size App Store Connect asks for (1320 x
-#                        2868), and writes the PNGs to ios/build/screenshots/.
+#                        and writes the PNGs to ios/build/screenshots/. Its
+#                        6.3" display (1206 x 2622) is the one size App Store
+#                        Connect requires, "iPhone with Dynamic Island (medium
+#                        display)". It turned down 6.9" (1320 x 2868) there.
 #
 # The games are seeded, so every run draws the same boards. The status bar is
 # set to 9:41 with a full battery, and the simulator to light appearance.
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
-name="iPhone 17 Pro Max"
+name="iPhone 17 Pro"
 
 device="$(xcrun simctl list devices available --json | /usr/bin/python3 -c '
 import json, sys
