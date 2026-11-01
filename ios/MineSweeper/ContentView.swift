@@ -90,6 +90,8 @@ struct ContentView: View {
 
             ScoreboardView(model: model, axis: beside ? .vertical : .horizontal)
 
+            bestTime
+
             // Under the scoreboard, Flag under the clock and away from the face, so
             // reaching for it never starts a new game. Beside the board the two are
             // icons, to keep the column narrow.
@@ -99,6 +101,16 @@ struct ContentView: View {
             }
             .labelStyle(ControlLabelStyle(iconOnly: beside))
         }
+    }
+
+    /// The fastest win at the picked difficulty, under the clock it is measured
+    /// on. It changes with the picker, and says so on the win that beats it.
+    private var bestTime: some View {
+        Text(bestTimeText(seconds: model.bestSeconds, isNew: model.isNewBest))
+            .font(.footnote.monospacedDigit().weight(model.isNewBest ? .bold : .regular))
+            .foregroundStyle(Palette.ink)
+            .accessibilityLabel(bestTimeLabel(seconds: model.bestSeconds, isNew: model.isNewBest))
+            .accessibilityIdentifier("best-time")
     }
 
     /// When on, a tap flags instead of revealing. Every game starts with it off.

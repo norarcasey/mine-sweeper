@@ -23,14 +23,22 @@ final class GameModel {
     /// flags it instead of revealing it, so flagging never trips a mine. Every
     /// game starts with it off.
     var isFlagMode = false
+    /// The fastest win at each difficulty, kept between launches.
+    private let bestTimes: BestTimes
+    /// The best time at the current difficulty, or nil before its first win.
+    private(set) var bestSeconds: Int?
+    /// True once this game's win has set a new best, until the next game.
+    private(set) var isNewBest = false
 
     /// When set, each game's first reveal places mines from this seed, so a
     /// UI test knows where they are. Nil in normal play.
     private let seed: UInt64?
 
-    init(difficulty: Difficulty, seed: UInt64? = nil) {
+    init(difficulty: Difficulty, seed: UInt64? = nil, bestTimes: BestTimes = BestTimes()) {
         game = Game(difficulty: difficulty)
         self.seed = seed
+        self.bestTimes = bestTimes
+        bestSeconds = bestTimes.seconds(for: difficulty)
     }
 
     var difficulty: Difficulty {
@@ -39,6 +47,7 @@ final class GameModel {
             guard newValue != game.difficulty else { return }
             game = Game(difficulty: newValue)
             isFlagMode = false
+            bestSeconds = bestTimes.seconds(for: newValue)
             clearClock()
         }
     }
@@ -130,7 +139,12 @@ final class GameModel {
         }
         if !isOver(before), game.isGameOver {
             endedAt = now
-            AccessibilityNotification.Announcement(outcome(game.state)).post()
+            if game.state == .won {
+                isNewBest = bestTimes.record(elapsedSeconds(at: now), for: game.difficulty)
+                bestSeconds = bestTimes.seconds(for: game.difficulty)
+            }
+            let announcement = isNewBest ? "\(outcome(game.state)) New best time!" : outcome(game.state)
+            AccessibilityNotification.Announcement(announcement).post()
         }
     }
 
@@ -143,5 +157,6 @@ final class GameModel {
         endedAt = nil
         pausedAt = nil
         pausedFor = 0
+        isNewBest = false
     }
 }

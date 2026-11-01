@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 import MineSweeperKit
 import Testing
 @testable import MineSweeper
@@ -307,5 +308,85 @@ struct SevenSegmentTests {
     @Test func lightsNothingForAnythingElse() {
         #expect(segments(for: ":").isEmpty)
         #expect(segments(for: " ").isEmpty)
+    }
+}
+
+@Suite("Best times (MINE-23)")
+struct BestTimesTests {
+    /// A store of its own, empty, so no test sees another's times.
+    private func freshTimes() throws -> BestTimes {
+        let name = "BestTimesTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: name))
+        defaults.removePersistentDomain(forName: name)
+        return BestTimes(defaults: defaults)
+    }
+
+    @Test func keepsOnlyTheFastestWinAtEachDifficulty() throws {
+        let times = try freshTimes()
+        #expect(times.seconds(for: .beginner) == nil)
+
+        #expect(times.record(42, for: .beginner))
+        #expect(!times.record(50, for: .beginner))
+        #expect(!times.record(42, for: .beginner), "a tie is not a new best")
+        #expect(times.record(30, for: .beginner))
+        #expect(times.seconds(for: .beginner) == 30)
+
+        #expect(times.seconds(for: .intermediate) == nil)
+        #expect(times.seconds(for: .expert) == nil)
+    }
+
+    @Test func showsTheBestAsTheClockShowsTime() {
+        #expect(bestTimeText(seconds: nil, isNew: false) == "No best yet")
+        #expect(bestTimeText(seconds: 83, isNew: false) == "Best 01:23")
+        #expect(bestTimeText(seconds: 42, isNew: true) == "New best 00:42")
+        #expect(bestTimeLabel(seconds: nil, isNew: false) == "No best time yet")
+        #expect(bestTimeLabel(seconds: 1, isNew: false) == "Best time: 1 second")
+        #expect(bestTimeLabel(seconds: 42, isNew: true) == "New best time: 42 seconds")
+    }
+
+    /// Wins a seeded Beginner board by revealing every safe cell.
+    @MainActor
+    private func win(_ model: GameModel, seed: UInt64) {
+        var replay = Game(difficulty: .beginner)
+        var generator = SeededGenerator(seed: seed)
+        replay.reveal(row: 4, column: 4, using: &generator)
+        model.reveal(row: 4, column: 4)
+        for row in 0..<replay.rows {
+            for column in 0..<replay.columns where !replay.board[row][column].isMine {
+                model.reveal(row: row, column: column)
+            }
+        }
+    }
+
+    @MainActor
+    @Test func aWinSetsTheBestAndALossDoesNot() throws {
+        let model = try GameModel(difficulty: .beginner, seed: 7, bestTimes: freshTimes())
+        #expect(model.bestSeconds == nil)
+
+        model.reveal(row: 4, column: 4)
+        let mine = try #require(model.game.mineIDs.first)
+        model.reveal(row: mine / model.game.columns, column: mine % model.game.columns)
+        #expect(model.game.state == .lost)
+        #expect(model.bestSeconds == nil)
+
+        model.newGame()
+        win(model, seed: 7)
+        #expect(model.game.state == .won)
+        #expect(model.bestSeconds == 0)
+        #expect(model.isNewBest)
+
+        // The next game is not a new best until it wins faster, and a tie is not.
+        model.newGame()
+        #expect(!model.isNewBest)
+        win(model, seed: 7)
+        #expect(model.game.state == .won)
+        #expect(!model.isNewBest)
+        #expect(model.bestSeconds == 0)
+
+        // Each difficulty keeps its own.
+        model.difficulty = .intermediate
+        #expect(model.bestSeconds == nil)
+        model.difficulty = .beginner
+        #expect(model.bestSeconds == 0)
     }
 }

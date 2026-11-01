@@ -24,6 +24,20 @@ func timerLabel(seconds: Int) -> String {
     "Time elapsed: \(seconds) \(seconds == 1 ? "second" : "seconds")"
 }
 
+/// The best time under the scoreboard: "Best 01:23", "New best 00:42" on the
+/// win that set it, and "No best yet" before a level's first win. The clock's
+/// "mm:ss", so the two read alike.
+func bestTimeText(seconds: Int?, isNew: Bool) -> String {
+    guard let seconds else { return "No best yet" }
+    return "\(isNew ? "New best" : "Best") \(formatTimer(seconds: seconds))"
+}
+
+/// The best time for VoiceOver: "Best time: 42 seconds".
+func bestTimeLabel(seconds: Int?, isNew: Bool) -> String {
+    guard let seconds else { return "No best time yet" }
+    return "\(isNew ? "New best time" : "Best time"): \(seconds) \(seconds == 1 ? "second" : "seconds")"
+}
+
 private func pad(_ value: Int, to width: Int) -> String {
     let digits = String(value)
     return String(repeating: "0", count: max(0, width - digits.count)) + digits

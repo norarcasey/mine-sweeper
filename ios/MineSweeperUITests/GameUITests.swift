@@ -41,6 +41,9 @@ final class GameUITests: XCTestCase {
 
     func testRevealingEverySafeCellWins() {
         var game = replay()
+        // A seeded launch starts with no best times.
+        let best = app.descendants(matching: .any)["best-time"]
+        XCTAssertEqual(best.label, "No best time yet")
         tap(Self.opener.row, Self.opener.column)
         XCTAssertEqual(cell(Self.opener.row, Self.opener.column).label, "Row 5, column 5, empty")
 
@@ -59,6 +62,12 @@ final class GameUITests: XCTestCase {
 
         XCTAssertEqual(app.buttons["new-game"].value as? String, "You won!")
         XCTAssertEqual(app.descendants(matching: .any)["mines-remaining"].label, "Mines remaining: 0")
+        // The first win at a difficulty is its best.
+        XCTAssertTrue(best.label.hasPrefix("New best time: "), best.label)
+
+        // The next game keeps it, no longer new.
+        app.buttons["new-game"].tap()
+        XCTAssertTrue(best.label.hasPrefix("Best time: "), best.label)
     }
 
     func testRevealingAMineLoses() throws {
