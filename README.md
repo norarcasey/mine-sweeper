@@ -4,6 +4,13 @@ A typescript and react version of mine sweeper.
 
 ![A completed game of Mine Sweeper, with every mine flagged and the timer stopped at 22 seconds](docs/screenshot.png)
 
+## On iPhone
+
+[**Nora's Mine Sweeper** is on the App Store](https://apps.apple.com/app/noras-mine-sweeper/id6824740774).
+It's a native SwiftUI app with the same rules as this component, and adds a Flag mode, an
+Expert board turned to fit an upright phone, VoiceOver support and haptics. The source is in
+[`ios/`](ios/README.md).
+
 ## Get started
 
 The component is developed and previewed in Storybook:
