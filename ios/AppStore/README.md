@@ -146,3 +146,14 @@ submitted version, so it shows exactly what was reviewed:
 Then, in App Store Connect: paste the Notes into App Review Information, reply in App Review
 (the Resolution Center) with the same text and the recording attached, and resubmit. The build
 does not change, so nothing is uploaded.
+
+### 1.0 (116): Approved (5 Nov 2026, MINE-22)
+
+The reply to the 2.1 request went in with the recording from Nora's phone and the Notes above,
+and the same build was resubmitted. Apple approved it. None of the earlier risks came up: 4.3(b)
+spam/clone, the `minesweeper` keyword (2.3.7) and the GitHub Issues support URL (1.5).
+
+The version is set to **release manually**, so approval didn't publish it. Nora pressed
+**Release** in App Store Connect the same day, 5 Nov 2026, so 1.0 (116) is the first public
+version. Until the EU trader status (Digital Services Act) is answered in App Store Connect, the
+app isn't offered in EU storefronts.
