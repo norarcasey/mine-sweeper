@@ -42,6 +42,10 @@ destination in Xcode and press Run.
   game. It is presentation only, so the component has no equivalent.
 - The **face** starts a new game. The **picker** changes difficulty and starts a new game, and
   the choice is kept between launches.
+- **Best times:** under the scoreboard, the fastest win at the chosen difficulty ("Best 01:23",
+  "No best yet"), and "New best" on a win that beats it. Only the best is kept, in whole seconds
+  with pauses left out, in `UserDefaults` (`BestTimes.swift`, MINE-23). A best time is not a rule,
+  so the component has no equivalent.
 - **Pausing:** leaving the app mid-game (another app, the app switcher, Control Center, the
   lock button) holds the clock and covers the board with a **Paused** screen, which stays
   until it is tapped. The **Pause** button, on Flag's left, does the same by hand, and turns
@@ -107,7 +111,7 @@ it knows where the mines are without the app telling it.
 `AppStore/` holds the listing (every App Store Connect field, in its `README.md`), the privacy
 policy and the support page. `MineSweeper/PrivacyInfo.xcprivacy` is the privacy manifest: it
 tracks nothing and collects nothing, and gives a reason (CA92.1) for the app's one use of
-`UserDefaults`, which keeps the difficulty.
+`UserDefaults`, which keeps the difficulty and the best times.
 
 ```bash
 ios/screenshots.sh   # the 6.3" screenshots, from seeded games, into ios/build/screenshots/

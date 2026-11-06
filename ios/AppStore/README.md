@@ -21,7 +21,11 @@ changes there, change it here too.
 | Privacy policy URL            | https://github.com/norarcasey/mine-sweeper/blob/main/ios/AppStore/privacy.md |
 | App Privacy (nutrition label) | Data Not Collected                                                           |
 
-## Version 1.0
+## Version 1.1
+
+App Store Connect copies every field from the version before, so a new version only changes
+what is listed as changed. 1.1 (MINE-26) adds best times: What's New, one line in the
+Description, the Notes' item 4, and the won screenshot, which now shows "New best".
 
 | Field            | Value                                                                        |
 | ---------------- | ---------------------------------------------------------------------------- |
@@ -29,8 +33,15 @@ changes there, change it here too.
 | Marketing URL    | none                                                                         |
 | Copyright        | 2026 Nora Casey                                                              |
 | Screenshots      | iPhone 6.3", 1206 × 2622: `1-beginner` … `5-landscape`, in that order        |
+| Build            | The 1.1 build from `ios/testflight.sh upload`                                |
 | Release          | Manually release this version                                                |
 | Sign-in required | No                                                                           |
+
+### What's New in This Version (4000)
+
+```
+Best times: the app now keeps your fastest win on each level and shows it under the scoreboard. Beat it and it says "New best". Only the best time is kept, and it stays on your phone.
+```
 
 ### Promotional text (170)
 
@@ -65,7 +76,7 @@ THREE LEVELS
 • Beginner: 9 × 9 with 10 mines
 • Intermediate: 16 × 16 with 40 mines
 • Expert: 16 × 30 with 99 mines
-The app remembers the level you play.
+The app remembers the level you play, and your best time on each.
 
 TWO WAYS TO WIN
 Open every safe square, or flag exactly the mines and nothing else.
@@ -101,10 +112,11 @@ Nothing to set up and no login. Launch the app and a Beginner game is ready.
 - Tap a revealed number whose flags match it to open its other neighbours.
 - Win by opening every safe square, or by flagging exactly the mines. Opening a mine loses.
 - The face starts a new game. The picker at the top changes the difficulty (Beginner 9x9, Intermediate 16x16, Expert 16x30). Pause stops the clock.
+- Under the scoreboard is the best time for the chosen difficulty. A win that beats it shows "New best".
 - On Expert, a phone held upright shows the board turned on its side so the squares stay large enough to tap; pinch to zoom.
 
 4. EXTERNAL SERVICES
-None. The app makes no network requests and uses no third-party SDKs, data providers, authentication, payment or AI services. It uses only Apple's frameworks (SwiftUI, UIKit). The one thing it stores is the chosen difficulty, on the device.
+None. The app makes no network requests and uses no third-party SDKs, data providers, authentication, payment or AI services. It uses only Apple's frameworks (SwiftUI, UIKit). The only things it stores are the chosen difficulty and the best time on each difficulty, on the device.
 
 5. REGIONAL DIFFERENCES
 None. The app works the same in every region and is in English only.
@@ -162,3 +174,9 @@ version, at <https://apps.apple.com/app/noras-mine-sweeper/id6824740774> (Apple 
 `6824740774`). Apple says a release can take up to 24 hours to become publicly available. Until
 the EU trader status (Digital Services Act) is answered in App Store Connect, the
 app isn't offered in EU storefronts.
+
+### 1.1: best times (MINE-26)
+
+The first update. Best times (MINE-23) reached TestFlight as 1.0 (120), after 1.0 (116) had
+been submitted, so 116 went out without them. 1.0 can take no new build once released, so the
+update is version 1.1.
