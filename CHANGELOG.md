@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-11-05
+
+### Fixed
+
+- **The stylesheet no longer styles the page around the game.** It shipped
+  global rules (a `*` margin and padding reset, and `body` and `code` fonts)
+  that beat a host page's own layered CSS, so embedding the game could strip
+  the padding and widths from the rest of the page. Every rule is now scoped
+  under the component's root `.game`, and the game looks the same. No API
+  change.
+
 ## [1.0.3] - 2026-10-19
 
 ### Fixed
@@ -208,6 +219,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Earlier releases (0.1.x – 0.3.0) predate this changelog; see the git history
 for details. 0.3.0 added winning game states.
 
+[1.0.4]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/norarcasey/mine-sweeper/compare/v1.0.0...v1.0.1
