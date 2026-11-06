@@ -1,13 +1,12 @@
-body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/*
+ * Everything here is scoped under .game, the component's root. These are
+ * plain, unlayered rules, so a global one (a `*` reset, a `body` font) would
+ * beat a host page's layered CSS and restyle the whole page around the game
+ * (MINE-25).
+ */
 
 /* Visible to screen readers only. */
-.visually-hidden {
+.game .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -20,26 +19,28 @@ body {
   white-space: nowrap;
 }
 
-* {
+.game * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
 .game {
   /* Fit the game to the inner content */
   display: inline-block;
+  box-sizing: border-box;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 20px;
   border: ridge 10px darkgray;
   border-top: ridge 10px #fff;
   border-left: ridge 10px #fff;
 }
 
-.scoreboard {
+.game .scoreboard {
   background-color: #bdbdbd;
   height: 70px;
   display: flex;
@@ -52,28 +53,28 @@ code {
   border-left: ridge 10px #fff;
 }
 
-.reset-container {
+.game .reset-container {
   border: ridge 4px darkgray;
   border-top: ridge 4px #fff;
   border-left: ridge 4px #fff;
 }
 
-.reset-button {
+.game .reset-button {
   cursor: pointer;
   background: transparent;
   border: none;
 }
 
-.board {
+.game .board {
   display: flex;
   flex-direction: column;
 }
 
-.row {
+.game .row {
   display: flex;
 }
 
-.cell {
+.game .cell {
   height: 30px;
   width: 30px;
   min-width: 30px;
@@ -88,59 +89,59 @@ code {
 }
 
 /* Keyboard focus indicator for arrow-key grid navigation. */
-.cell:focus-visible {
+.game .cell:focus-visible {
   outline: 3px solid #1565c0;
   outline-offset: -3px;
   position: relative;
   z-index: 1;
 }
 
-.flagged {
+.game .flagged {
   color: black;
 }
 
-.revealed {
+.game .revealed {
   background-color: #bdbdbd;
   border: solid 1px gray;
 }
 
-.exploded {
+.game .exploded {
   background-color: red;
   color: black;
 }
 
-.adj-1 {
+.game .adj-1 {
   color: blue;
 }
 
-.adj-2 {
+.game .adj-2 {
   color: green;
 }
 
-.adj-3 {
+.game .adj-3 {
   color: red;
 }
 
-.adj-4 {
+.game .adj-4 {
   color: purple;
 }
 
-.adj-5 {
+.game .adj-5 {
   color: maroon;
 }
 
-.adj-6 {
+.game .adj-6 {
   color: turquoise;
 }
 
-.adj-7 {
+.game .adj-7 {
   color: black;
 }
 
-.adj-8 {
+.game .adj-8 {
   color: gray;
 }
 
-.revealed.exploded {
+.game .revealed.exploded {
   background-color: red;
 }
