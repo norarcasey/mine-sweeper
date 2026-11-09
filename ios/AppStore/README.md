@@ -20,6 +20,7 @@ changes there, change it here too.
 | Age rating                    | 4+: every questionnaire answer is None or No (no ads, purchases, chat, web)  |
 | Privacy policy URL            | https://github.com/norarcasey/mine-sweeper/blob/main/ios/AppStore/privacy.md |
 | App Privacy (nutrition label) | Data Not Collected                                                           |
+| EU trader status (DSA)        | Non-trader, for the whole account (Business, 8 Nov 2026, MINE-27)            |
 
 ## Version 1.1
 
@@ -171,12 +172,23 @@ spam/clone, the `minesweeper` keyword (2.3.7) and the GitHub Issues support URL 
 The version is set to **release manually**, so approval didn't publish it. Nora pressed
 **Release** in App Store Connect the same day, 5 Nov 2026, so 1.0 (116) is the first public
 version, at <https://apps.apple.com/app/noras-mine-sweeper/id6824740774> (Apple ID
-`6824740774`). Apple says a release can take up to 24 hours to become publicly available. Until
-the EU trader status (Digital Services Act) is answered in App Store Connect, the
-app isn't offered in EU storefronts.
+`6824740774`). Apple says a release can take up to 24 hours to become publicly available. It
+wasn't offered in EU storefronts until the EU trader status was answered (see below).
 
 ### 1.1: best times (MINE-26)
 
 The first update. Best times (MINE-23) reached TestFlight as 1.0 (120), after 1.0 (116) had
 been submitted, so 116 went out without them. 1.0 can take no new build once released, so the
 update is version 1.1.
+
+### EU storefronts: non-trader (8 Nov 2026, MINE-27)
+
+The EU's Digital Services Act has every developer declare in App Store Connect (**Business**)
+whether they are a trader, and until that is answered, Apple offers none of their apps in EU
+storefronts. 1.0 went out with it unanswered, and a friend of Nora's in Spain found no app.
+Nora declared **non-trader**: the app is free, with no ads, purchases or business behind it. A
+trader's verified address, phone and email are shown on EU product pages, and a non-trader's
+are not; EU users are told instead that consumer-protection law may not apply. The answer is for
+the whole account, not per app or version, so it needs no build or review, and Apple says it can
+take up to a day to reach EU storefronts. If an app on this account ever charges money, look at
+this answer again.
