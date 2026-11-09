@@ -181,6 +181,12 @@ The first update. Best times (MINE-23) reached TestFlight as 1.0 (120), after 1.
 been submitted, so 116 went out without them. 1.0 can take no new build once released, so the
 update is version 1.1.
 
+Submitted 8 Nov 2026 as 1.1 (127), approved and released by Nora: the App
+Store lookup (`itunes.apple.com/lookup?id=6824740774`) shows 1.1 with
+`currentVersionReleaseDate` 9 Nov 2026 17:24 UTC and the What's New text, in the US and the
+Spanish storefronts (MINE-28). One day from submission to release, against eleven for 1.0, which
+had the 2.1 information request.
+
 ### EU storefronts: non-trader (8 Nov 2026, MINE-27)
 
 The EU's Digital Services Act has every developer declare in App Store Connect (**Business**)
